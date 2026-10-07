@@ -134,6 +134,8 @@ function updateKpiCards(kpis, totalCount) {
  * Switch Sub-view inside DSAR Operations Workspace
  */
 export function switchDsarSubView(viewKey) {
+  // Normalize alias
+  if (viewKey === 'queue') viewKey = 'dashboard';
   activeSubView = viewKey;
 
   const views = {
@@ -166,6 +168,18 @@ export function switchDsarSubView(viewKey) {
     if (views.dashboard) views.dashboard.classList.remove('hidden');
     activeFilter = 'all';
     renderDsarTable();
+  } else if (viewKey === 'intake') {
+    if (views.dashboard) views.dashboard.classList.remove('hidden');
+    const el = document.getElementById('dsar-step1-intake-card') || document.getElementById('dsar-deep-pipeline-section');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  } else if (viewKey === 'discovery') {
+    if (views.dashboard) views.dashboard.classList.remove('hidden');
+    const el = document.getElementById('dsar-step2-discovery-card') || document.getElementById('dsar-deep-pipeline-section');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  } else if (viewKey === 'execution') {
+    if (views.dashboard) views.dashboard.classList.remove('hidden');
+    const el = document.getElementById('dsar-step5-execution-card') || document.getElementById('dsar-deep-pipeline-section');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
   } else if (viewKey === 'sla_breaches') {
     if (views.dashboard) views.dashboard.classList.remove('hidden');
     activeFilter = 'sla_breach';
@@ -190,6 +204,8 @@ export function switchDsarSubView(viewKey) {
     if (window.loadPlatformSettings) window.loadPlatformSettings();
   }
 }
+
+export const switchDsarSubview = switchDsarSubView;
 
 /**
  * Fetches DSAR requests from backend and updates dashboard UI

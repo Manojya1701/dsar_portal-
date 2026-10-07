@@ -43,9 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Expose global subview switcher for navigation bar
   window.switchDsarSubview = switchDsarSubview;
+  window.switchDsarSubView = switchDsarSubview;
 
-  // Ensure default subview is active (Queue)
-  const defaultSub = document.getElementById('dsar-subview-queue');
+  // Ensure default subview is active (Dashboard / Queue)
+  const defaultSub = document.getElementById('dsar-subview-dashboard');
   if (defaultSub) {
     defaultSub.classList.remove('hidden');
   }

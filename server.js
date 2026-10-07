@@ -25,6 +25,7 @@ const fs = require('fs');
 
 const deletionRoutes = require('./backend/routes/deletion.routes');
 const consentRoutes = require('./backend/routes/consent.routes');
+const dsarRoutes = require('./backend/routes/dsar.routes');
 const { setupGateway } = require('./backend/gateway');
 require('./backend/services/kafka-consumers');
 
@@ -93,6 +94,9 @@ app.use('/api/deletions', deletionRoutes);
 
 app.use('/api/v1/consent', consentRoutes);
 app.use('/api/consent', consentRoutes);
+
+app.use('/api', dsarRoutes);
+app.use('/', dsarRoutes);
 
 /* =========================================================
    STATIC FRONTEND & DOCUMENTATION
