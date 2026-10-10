@@ -33,6 +33,31 @@ router.post('/dsar/analyze-intent', async (req, res) => {
   }
 });
 
+// POST /api/dsar/process-email-request — End-to-End Automated Processing of Customer Email Request
+router.post('/dsar/process-email-request', async (req, res) => {
+  try {
+    const result = await dsarService.processCustomerEmailRequest(req.body || {});
+    if (!result.success) {
+      return jsonError(res, 400, result.message);
+    }
+    return res.status(200).json(result);
+  } catch (err) {
+    return jsonError(res, 500, err.message);
+  }
+});
+
+router.post('/api/dsar/process-email-request', async (req, res) => {
+  try {
+    const result = await dsarService.processCustomerEmailRequest(req.body || {});
+    if (!result.success) {
+      return jsonError(res, 400, result.message);
+    }
+    return res.status(200).json(result);
+  } catch (err) {
+    return jsonError(res, 500, err.message);
+  }
+});
+
 // POST /api/dsar/requests — Submit new DSAR intake request
 router.post('/dsar/requests', async (req, res) => {
   try {
@@ -478,7 +503,22 @@ router.get('/api/dsar/preview-email/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const history = await emailNotificationService.getEmailDispatchHistory();
-    const item = Array.isArray(history) ? history.find(h => h.id === id || h.id.includes(id)) : null;
+    const item = Array.isArray(history) ? history.find(h => h.id === id || h.id.includes(id) || h.requestId === id) : null;
+    if (!item || !item.html) {
+      return res.status(404).send('<div style="font-family:Arial;padding:40px;text-align:center;color:#64748b;"><h2>📬 Email preview not found or expired</h2><p>Please send a new test email to generate a live preview.</p></div>');
+    }
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.send(item.html);
+  } catch (err) {
+    return res.status(500).send(`<h2>Error rendering preview: ${err.message}</h2>`);
+  }
+});
+
+router.get('/dsar/preview-email/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const history = await emailNotificationService.getEmailDispatchHistory();
+    const item = Array.isArray(history) ? history.find(h => h.id === id || h.id.includes(id) || h.requestId === id) : null;
     if (!item || !item.html) {
       return res.status(404).send('<div style="font-family:Arial;padding:40px;text-align:center;color:#64748b;"><h2>📬 Email preview not found or expired</h2><p>Please send a new test email to generate a live preview.</p></div>');
     }

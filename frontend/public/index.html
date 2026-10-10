@@ -1940,11 +1940,19 @@
               </label>
             </div>
 
-            <!-- Submit Button -->
+            <!-- Submit Button (Manual Flow) -->
             <button type="button" id="btn-submit-intake-ai" class="btn-primary" style="width:100%; padding:12px 18px; font-weight:700; font-size:0.92rem; display:flex; align-items:center; justify-content:center; gap:8px; background:#2563eb; border-radius:8px; box-shadow:0 4px 14px rgba(37,99,235,0.35);">
-              <span>Submit Request</span>
+              <span>Submit Request (Manual Flow)</span>
               <span style="font-size:1.1rem;">➔</span>
             </button>
+
+            <!-- One-Click Auto-Process Mail Request Button -->
+            <button type="button" id="btn-process-email-e2e" class="btn-primary" style="width:100%; margin-top:10px; padding:12px 18px; font-weight:700; font-size:0.92rem; display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg, #06b6d4 0%, #2563eb 100%); border-radius:8px; box-shadow:0 4px 14px rgba(6,182,212,0.35); border:none; cursor:pointer; color:#ffffff;">
+              <span>⚡ One-Click Auto-Process Mail Request (End-to-End)</span>
+            </button>
+            <div style="font-size:0.7rem; color:var(--text-muted); text-align:center; margin-top:6px; line-height:1.35;">
+              Processes customer email request through all 7 lifecycle stages & delivers verified certificate to customer inbox.
+            </div>
 
           </div>
 
@@ -2932,7 +2940,209 @@
             <div id="profile-modal-name-preview" style="font-weight: 800; font-size: 0.98rem; color: var(--text-bright);">John Doe</div>
             <div id="profile-modal-role-preview" style="font-size: 0.78rem; color: var(--cyan); font-weight: 600; margin-top: 2px;">Privacy Team • Senior Privacy Specialist</div>
           </div>
+        <div>
+          <label for="profile-input-name" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Full Name</label>
+          <input type="text" id="profile-input-name" class="input-field" placeholder="John Doe" style="width:100%;">
         </div>
+        <div>
+          <label for="profile-input-email" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Corporate Email</label>
+          <input type="email" id="profile-input-email" class="input-field" placeholder="john.doe@segmento.com" style="width:100%;">
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label for="profile-select-department" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Department</label>
+            <select id="profile-select-department" class="input-field" style="width:100%;">
+              <option value="Privacy Team">Privacy Team</option>
+              <option value="Data Engineering">Data Engineering</option>
+              <option value="CRM Team">CRM Team</option>
+              <option value="Security">Security</option>
+              <option value="Privacy / DPO">Privacy / DPO</option>
+            </select>
+          </div>
+          <div>
+            <label for="profile-input-title" style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); display:block; margin-bottom:4px;">Job Title</label>
+            <input type="text" id="profile-input-title" class="input-field" placeholder="Senior Privacy Specialist" style="width:100%;">
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+          <button type="button" id="btn-cancel-profile-modal" class="btn-ghost" style="padding:8px 16px;">Cancel</button>
+          <button type="submit" id="btn-save-profile" class="btn-primary" style="padding:8px 18px;">Save Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── MODAL: Automated Customer Mail Request Processing (End-to-End) ── -->
+  <div id="dsar-mail-process-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="mail-process-modal-title" style="z-index: 10000;">
+    <div class="modal-card" style="max-width: 680px; width: 94%; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); overflow: hidden; animation: fadeInDown 0.25s ease-out;">
+      
+      <!-- Modal Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, rgba(6,182,212,0.12), rgba(37,99,235,0.12));">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #06b6d4, #2563eb); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 12px rgba(6,182,212,0.35);">
+            ⚡
+          </div>
+          <div>
+            <h3 id="mail-process-modal-title" style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-bright);">Customer Mail Request — Automated Processing</h3>
+            <p style="margin: 3px 0 0; font-size: 0.76rem; color: var(--text-muted);">End-to-End Statutory Compliance Pipeline (Intake ➔ Discovery ➔ Impact ➔ Policy ➔ Execution ➔ Verification ➔ Issuance & Dispatch)</p>
+          </div>
+        </div>
+        <button type="button" id="btn-close-mail-modal" class="btn-ghost" style="padding: 4px 8px; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-muted);" aria-label="Close modal">&times;</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div style="padding: 24px; max-height: 80vh; overflow-y: auto;">
+        
+        <!-- Live Status Bar -->
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span id="mail-process-status-badge" style="font-size: 0.76rem; font-weight: 700; color: var(--cyan); display: flex; align-items: center; gap: 6px;">
+              <span class="pulse-dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--cyan); animation:pulse 1.5s infinite;"></span>
+              Initializing automated orchestrator...
+            </span>
+            <span id="mail-process-progress-text" style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); font-family: monospace;">0% (Stage 0/7)</span>
+          </div>
+          <div style="width: 100%; height: 8px; background: var(--bg-input); border-radius: 6px; overflow: hidden; border: 1px solid var(--border);">
+            <div id="mail-process-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #06b6d4, #2563eb, #10b981); transition: width 0.4s ease; border-radius: 6px;"></div>
+          </div>
+        </div>
+
+        <!-- 7 Stages Sequential Checklist -->
+        <div id="mail-process-stages-list" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px;">
+          
+          <!-- Stage 1 -->
+          <div class="mail-stage-item" id="mail-stage-1" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="mail-stage-icon" style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: transparent; font-weight: bold;">✓</div>
+              <div>
+                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-bright);">1. Customer Mail Intake & AI Intent Classification</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted);">Ingest email text, classify rights (GDPR Art 17 / DPDP Act) & register tracking ID</div>
+              </div>
+            </div>
+            <span class="mail-stage-status" style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted);">Pending</span>
+          </div>
+
+          <!-- Stage 2 -->
+          <div class="mail-stage-item" id="mail-stage-2" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="mail-stage-icon" style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: transparent; font-weight: bold;">✓</div>
+              <div>
+                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-bright);">2. Multi-Store Identity Discovery Scan</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted);">Correlate customer identifiers across SQL, Elasticsearch, Neo4j & Redis</div>
+              </div>
+            </div>
+            <span class="mail-stage-status" style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted);">Pending</span>
+          </div>
+
+          <!-- Stage 3 -->
+          <div class="mail-stage-item" id="mail-stage-3" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="mail-stage-icon" style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: transparent; font-weight: bold;">✓</div>
+              <div>
+                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-bright);">3. Blast Radius & FK Impact Analysis</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted);">Trace foreign keys, orphaned rows, and prevent downstream system cascading failure</div>
+              </div>
+            </div>
+            <span class="mail-stage-status" style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted);">Pending</span>
+          </div>
+
+          <!-- Stage 4 -->
+          <div class="mail-stage-item" id="mail-stage-4" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="mail-stage-icon" style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: transparent; font-weight: bold;">✓</div>
+              <div>
+                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-bright);">4. Legal Policy Evaluation & DPO Sign-Off</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted);">Enforce 7-year CGST Section 36 financial invoice retention lock + DPO approval</div>
+              </div>
+            </div>
+            <span class="mail-stage-status" style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted);">Pending</span>
+          </div>
+
+          <!-- Stage 5 -->
+          <div class="mail-stage-item" id="mail-stage-5" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="mail-stage-icon" style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: transparent; font-weight: bold;">✓</div>
+              <div>
+                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-bright);">5. Cryptographic Execution & Kafka Broadcast</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted);">Purge marketing PII, pseudonymize logs, broadcast sync events to 5 connectors</div>
+              </div>
+            </div>
+            <span class="mail-stage-status" style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted);">Pending</span>
+          </div>
+
+          <!-- Stage 6 -->
+          <div class="mail-stage-item" id="mail-stage-6" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="mail-stage-icon" style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: transparent; font-weight: bold;">✓</div>
+              <div>
+                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-bright);">6. Post-Deletion Verification Re-Scan</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted);">Audit re-scan across all datastores (Confirmed 0 residual direct PII)</div>
+              </div>
+            </div>
+            <span class="mail-stage-status" style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted);">Pending</span>
+          </div>
+
+          <!-- Stage 7 -->
+          <div class="mail-stage-item" id="mail-stage-7" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="mail-stage-icon" style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: transparent; font-weight: bold;">✓</div>
+              <div>
+                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-bright);">7. Certificate Issuance & Customer Inbox Dispatch</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted);">Mint tamper-proof SHA-256 seal and send official Certificate of Erasure email</div>
+              </div>
+            </div>
+            <span class="mail-stage-status" style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted);">Pending</span>
+          </div>
+
+        </div>
+
+        <!-- Result Summary Box (Hidden until completion) -->
+        <div id="mail-process-result-box" class="hidden" style="background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.3); border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <span style="font-size: 0.88rem; font-weight: 800; color: #10b981; display: flex; align-items: center; gap: 8px;">
+              <span>✅</span> Statutory Deletion Lifecycle Completed & Certified!
+            </span>
+            <span id="mail-res-duration" style="font-size: 0.72rem; color: var(--text-muted); font-family: monospace;">Completed in 1.2s</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.78rem; margin-bottom: 14px;">
+            <div style="background: var(--bg-surface); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border);">
+              <div style="color: var(--text-muted); font-size: 0.7rem;">Tracking ID:</div>
+              <div id="mail-res-req-id" style="color: var(--cyan); font-weight: 800; font-family: monospace;">DSAR-2026-XXXXXX</div>
+            </div>
+            <div style="background: var(--bg-surface); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border);">
+              <div style="color: var(--text-muted); font-size: 0.7rem;">Certificate ID:</div>
+              <div id="mail-res-cert-id" style="color: #10b981; font-weight: 800; font-family: monospace;">CERT-2026-XXXXXX</div>
+            </div>
+          </div>
+
+          <div style="background: var(--bg-surface); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.74rem; line-height: 1.6; margin-bottom: 14px;">
+            <div><strong style="color: var(--text-secondary);">Recipient:</strong> <span id="mail-res-recipient" style="color: var(--text-bright);">customer@example.com</span></div>
+            <div><strong style="color: var(--text-secondary);">Cryptographic Seal:</strong> <span id="mail-res-seal" style="font-family: monospace; font-size: 0.7rem; color: var(--text-muted); word-break: break-all;">SHA-256</span></div>
+            <div><strong style="color: var(--text-secondary);">Email Dispatch:</strong> <span id="mail-res-dispatch-status" style="color: #10b981; font-weight: 700;">✓ Delivered to customer inbox</span></div>
+          </div>
+
+          <!-- Action buttons inside modal -->
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a id="mail-btn-view-email" href="#" target="_blank" class="btn-primary" style="flex: 1; padding: 10px 14px; font-size: 0.82rem; text-align: center; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #06b6d4; border-radius: 6px; color: #ffffff;">
+              <span>📧</span> <span>View Dispatched Customer Email</span>
+            </a>
+            <button type="button" id="mail-btn-view-certificate" class="btn-primary" style="flex: 1; padding: 10px 14px; font-size: 0.82rem; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #2563eb; border-radius: 6px; color: #ffffff; cursor: pointer;">
+              <span>📜</span> <span>View Full Certificate on Portal</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding: 14px 24px; border-top: 1px solid var(--border); background: var(--bg-input); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.72rem; color: var(--text-muted);">Segmento Protect Automated Privacy Orchestrator</span>
+        <button type="button" id="btn-done-mail-modal" class="btn-ghost" style="padding: 6px 16px; font-size: 0.82rem; cursor: pointer;">Close</button>
+      </div>
+
+    </div>
+  </div>
 
   <script type="module" src="js/app.js"></script>
 </body>

@@ -242,4 +242,18 @@ export function initDsarCertificate() {
 
   // Expose global handler for cross-module invocations
   window.generateDsarCertificate = generateDsarCertificate;
+  window.renderDsarCertificate = (cert, reqId) => {
+    if (reqId) activeCertificateRequestId = reqId;
+    const card = document.getElementById('dsar-step7-certificate-card');
+    if (card) {
+      card.classList.remove('hidden');
+      card.style.display = 'block';
+    }
+    renderCertificate(cert);
+    document.querySelectorAll('.dsar-step-item').forEach(item => {
+      item.classList.remove('active');
+      if (item.dataset.step === '7') item.classList.add('active');
+    });
+    if (card) card.scrollIntoView({ behavior: 'smooth' });
+  };
 }

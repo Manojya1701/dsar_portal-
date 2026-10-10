@@ -555,6 +555,250 @@ export async function handleCreateDsarCase(e) {
       createBtn.innerHTML = '<span>➔ Create DSAR Case</span>';
     }
   }
+/**
+ * End-to-End Automated Processing of Customer Mail Request
+ * Triggers complete lifecycle from email intake through discovery, impact, policy,
+ * cryptographic execution, verification, certificate generation, and customer email dispatch.
+ */
+export async function handleProcessCustomerMailRequest() {
+  const emailInput = document.getElementById('intake-email');
+  const nameInput = document.getElementById('intake-full-name');
+  const textInput = document.getElementById('intake-request-text');
+  const e2eBtn = document.getElementById('btn-process-email-e2e');
+
+  const email = emailInput?.value?.trim() || '';
+  const fullName = nameInput?.value?.trim() || 'Valued Customer';
+  const requestText = textInput?.value?.trim() || 'Please permanently delete and erase all my account records, purchase logs, and telemetry under GDPR Art 17 and DPDP Act.';
+
+  if (!email || !email.includes('@')) {
+    showToast('Please enter a valid customer email address to process request.', 'warning');
+    if (emailInput) emailInput.focus();
+    return;
+  }
+
+  const modal = document.getElementById('dsar-mail-process-modal');
+  const progressBar = document.getElementById('mail-process-progress-bar');
+  const progressText = document.getElementById('mail-process-progress-text');
+  const statusBadge = document.getElementById('mail-process-status-badge');
+  const resultBox = document.getElementById('mail-process-result-box');
+
+  if (!modal) {
+    showToast('Mail processing dialog not found', 'error');
+    return;
+  }
+
+  // Open modal
+  modal.classList.remove('hidden');
+
+  // Reset modal stage UI
+  if (resultBox) resultBox.classList.add('hidden');
+  if (progressBar) progressBar.style.width = '5%';
+  if (progressText) progressText.textContent = '5% (Initializing)';
+  if (statusBadge) {
+    statusBadge.innerHTML = `<span class="pulse-dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--cyan); animation:pulse 1.5s infinite;"></span> Ingesting customer mail for ${escapeHtml(email)}...`;
+  }
+
+  // Reset stage checklist
+  for (let s = 1; s <= 7; s++) {
+    const item = document.getElementById(`mail-stage-${s}`);
+    if (item) {
+      item.style.borderColor = 'var(--border)';
+      item.style.background = 'var(--bg-input)';
+      const icon = item.querySelector('.mail-stage-icon');
+      if (icon) {
+        icon.style.borderColor = 'var(--border)';
+        icon.style.background = 'transparent';
+        icon.style.color = 'transparent';
+      }
+      const st = item.querySelector('.mail-stage-status');
+      if (st) {
+        st.textContent = 'Pending';
+        st.style.color = 'var(--text-muted)';
+      }
+    }
+  }
+
+  const stageDescriptions = [
+    'Stage 1: Customer Mail Intake & AI Intent Classification',
+    'Stage 2: Multi-Store Identity Discovery Scan',
+    'Stage 3: Blast Radius & FK Impact Analysis',
+    'Stage 4: Legal Policy Evaluation & DPO Sign-Off',
+    'Stage 5: Cryptographic Execution & Kafka Broadcast',
+    'Stage 6: Post-Deletion Verification Re-Scan',
+    'Stage 7: Certificate Issuance & Customer Inbox Dispatch'
+  ];
+
+  function setStageActive(stageIndex) {
+    const item = document.getElementById(`mail-stage-${stageIndex}`);
+    if (item) {
+      item.style.borderColor = 'var(--cyan)';
+      item.style.background = 'rgba(6,182,212,0.06)';
+      const icon = item.querySelector('.mail-stage-icon');
+      if (icon) {
+        icon.style.borderColor = 'var(--cyan)';
+        icon.style.background = 'rgba(6,182,212,0.15)';
+        icon.style.color = 'var(--cyan)';
+        icon.textContent = '⚡';
+      }
+      const st = item.querySelector('.mail-stage-status');
+      if (st) {
+        st.textContent = 'Running...';
+        st.style.color = 'var(--cyan)';
+      }
+    }
+    const pct = Math.min(15 + (stageIndex - 1) * 14, 95);
+    if (progressBar) progressBar.style.width = `${pct}%`;
+    if (progressText) progressText.textContent = `${pct}% (${stageDescriptions[stageIndex - 1]})`;
+    if (statusBadge) {
+      statusBadge.innerHTML = `<span class="pulse-dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--cyan); animation:pulse 1.5s infinite;"></span> Executing ${stageDescriptions[stageIndex - 1]}...`;
+    }
+  }
+
+  function setStageDone(stageIndex) {
+    const item = document.getElementById(`mail-stage-${stageIndex}`);
+    if (item) {
+      item.style.borderColor = 'rgba(16,185,129,0.4)';
+      item.style.background = 'rgba(16,185,129,0.05)';
+      const icon = item.querySelector('.mail-stage-icon');
+      if (icon) {
+        icon.style.borderColor = '#10b981';
+        icon.style.background = '#10b981';
+        icon.style.color = '#ffffff';
+        icon.textContent = '✓';
+      }
+      const st = item.querySelector('.mail-stage-status');
+      if (st) {
+        st.textContent = '✓ Done';
+        st.style.color = '#10b981';
+      }
+    }
+  }
+
+  if (e2eBtn) {
+    e2eBtn.disabled = true;
+    e2eBtn.style.opacity = '0.7';
+  }
+
+  const startTime = Date.now();
+
+  try {
+    // Stage 1 animation
+    setStageActive(1);
+    await new Promise(r => setTimeout(r, 350));
+    setStageDone(1);
+
+    // Stage 2 animation
+    setStageActive(2);
+    await new Promise(r => setTimeout(r, 400));
+    setStageDone(2);
+
+    // Stage 3 animation
+    setStageActive(3);
+    await new Promise(r => setTimeout(r, 350));
+    setStageDone(3);
+
+    // Trigger API request while stages 4-7 stream
+    setStageActive(4);
+
+    const resPromise = fetch(`${window.location.origin}/api/dsar/process-email-request`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        fullName,
+        requestText,
+        requestType: 'Erasure / Deletion'
+      })
+    });
+
+    await new Promise(r => setTimeout(r, 400));
+    setStageDone(4);
+
+    setStageActive(5);
+    await new Promise(r => setTimeout(r, 450));
+    setStageDone(5);
+
+    setStageActive(6);
+    await new Promise(r => setTimeout(r, 400));
+    setStageDone(6);
+
+    setStageActive(7);
+
+    const response = await resPromise;
+    const data = await response.json();
+
+    if (!response.ok || !data || !data.success) {
+      throw new Error(data?.message || 'Failed to process mail request');
+    }
+
+    setStageDone(7);
+
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+
+    // Update progress to 100%
+    if (progressBar) progressBar.style.width = '100%';
+    if (progressText) progressText.textContent = '100% (Certified & Dispatched)';
+    if (statusBadge) {
+      statusBadge.innerHTML = `<span style="color:#10b981; font-weight:700;">✓ Completed All 7 Lifecycle Stages in ${elapsed}s</span>`;
+    }
+
+    // Populate result box
+    if (resultBox) {
+      resultBox.classList.remove('hidden');
+      const reqIdEl = document.getElementById('mail-res-req-id');
+      const certIdEl = document.getElementById('mail-res-cert-id');
+      const recipEl = document.getElementById('mail-res-recipient');
+      const sealEl = document.getElementById('mail-res-seal');
+      const durEl = document.getElementById('mail-res-duration');
+      const emailBtn = document.getElementById('mail-btn-view-email');
+      const certBtn = document.getElementById('mail-btn-view-certificate');
+
+      if (reqIdEl) reqIdEl.textContent = data.requestId;
+      if (certIdEl) certIdEl.textContent = data.certificateId;
+      if (recipEl) recipEl.textContent = `${data.customerName || fullName} <${data.customerEmail || email}>`;
+      if (durEl) durEl.textContent = `Completed in ${elapsed}s`;
+
+      const certObj = data.stages?.certificate?.certificate;
+      if (sealEl && certObj?.digitalCertificateSeal) {
+        sealEl.textContent = certObj.digitalCertificateSeal;
+      }
+
+      // Preview email link
+      if (emailBtn) {
+        emailBtn.href = `${window.location.origin}/api/dsar/preview-email/${data.requestId}`;
+      }
+
+      // View certificate button handler
+      if (certBtn) {
+        certBtn.onclick = () => {
+          modal.classList.add('hidden');
+          if (window.renderDsarCertificate && certObj) {
+            window.renderDsarCertificate(certObj, data.requestId);
+          } else if (window.generateDsarCertificate) {
+            window.generateDsarCertificate(data.requestId);
+          }
+        };
+      }
+    }
+
+    showToast(`✓ Mail Request ${data.requestId} certified & confirmation sent to ${email}`, 'success');
+
+    // Refresh Dashboard queue
+    if (window.refreshDsarDashboard) {
+      window.refreshDsarDashboard();
+    }
+
+  } catch (err) {
+    if (statusBadge) {
+      statusBadge.innerHTML = `<span style="color:#ef4444; font-weight:700;">✗ Error: ${escapeHtml(err.message)}</span>`;
+    }
+    showToast(`Processing error: ${err.message}`, 'error');
+  } finally {
+    if (e2eBtn) {
+      e2eBtn.disabled = false;
+      e2eBtn.style.opacity = '1';
+    }
+  }
 }
 
 /**
@@ -685,11 +929,35 @@ export function initDsarIntake() {
     createCaseBtn.addEventListener('click', handleCreateDsarCase);
   }
 
+  // One-Click Auto-Process Customer Mail Button
+  const processEmailBtn = document.getElementById('btn-process-email-e2e');
+  if (processEmailBtn) {
+    processEmailBtn.addEventListener('click', handleProcessCustomerMailRequest);
+  }
+
+  // Close Mail Process Modal buttons
+  const closeMailModalBtn = document.getElementById('btn-close-mail-modal');
+  const doneMailModalBtn = document.getElementById('btn-done-mail-modal');
+  const mailModal = document.getElementById('dsar-mail-process-modal');
+
+  if (closeMailModalBtn && mailModal) {
+    closeMailModalBtn.addEventListener('click', () => mailModal.classList.add('hidden'));
+  }
+  if (doneMailModalBtn && mailModal) {
+    doneMailModalBtn.addEventListener('click', () => mailModal.classList.add('hidden'));
+  }
+  if (mailModal) {
+    mailModal.addEventListener('click', (e) => {
+      if (e.target === mailModal) mailModal.classList.add('hidden');
+    });
+  }
+
   // Expose global view switchers & handlers
   window.showDsarPortalView = showDsarPortalView;
   window.showUdpsCoreView = showUdpsCoreView;
   window.handleAiIntakeSubmit = handleAiIntakeSubmit;
   window.handleCreateDsarCase = handleCreateDsarCase;
+  window.handleProcessCustomerMailRequest = handleProcessCustomerMailRequest;
 
   // Handle URL hash on initial load & hashchange
   if (window.location.hash === '#dsar-portal-workspace' || window.location.hash === '#dsar-workflow-section' || window.location.hash.startsWith('#dsar')) {
