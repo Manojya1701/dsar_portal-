@@ -77,7 +77,7 @@ export async function openDsarAssignmentView(requestId) {
   const assignmentSection = document.getElementById('dsar-task-assignment-view');
   const detailSection = document.getElementById('dsar-ticket-detail-view');
   const subtaskSection = document.getElementById('dsar-subtask-detail-view');
-  const dashSection = document.getElementById('dsar-dashboard-workspace');
+  const dashSection = document.getElementById('dsar-dashboard-workspace') || document.getElementById('dsar-dashboard-internal-view');
   const pipelineSection = document.getElementById('dsar-deep-pipeline-section');
 
   if (detailSection) detailSection.classList.add('hidden');
@@ -194,7 +194,7 @@ export async function openIndividualSubtaskView(requestId, taskId, fromScreen = 
   const assignmentSection = document.getElementById('dsar-task-assignment-view');
   const detailSection = document.getElementById('dsar-ticket-detail-view');
   const subtaskSection = document.getElementById('dsar-subtask-detail-view');
-  const dashSection = document.getElementById('dsar-dashboard-workspace');
+  const dashSection = document.getElementById('dsar-dashboard-workspace') || document.getElementById('dsar-dashboard-internal-view');
   const pipelineSection = document.getElementById('dsar-deep-pipeline-section');
 
   if (assignmentSection) assignmentSection.classList.add('hidden');
@@ -689,7 +689,7 @@ export function initDsarAssignment() {
       const assignmentSection = document.getElementById('dsar-task-assignment-view');
       const detailSection = document.getElementById('dsar-ticket-detail-view');
       const subtaskSection = document.getElementById('dsar-subtask-detail-view');
-      const dashSection = document.getElementById('dsar-dashboard-workspace');
+      const dashSection = document.getElementById('dsar-dashboard-workspace') || document.getElementById('dsar-dashboard-internal-view');
       const pipelineSection = document.getElementById('dsar-deep-pipeline-section');
 
       if (assignmentSection) assignmentSection.classList.add('hidden');

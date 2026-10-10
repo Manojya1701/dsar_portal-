@@ -351,10 +351,12 @@ export function initDsarDetail() {
   const triggerPipeline = (e) => {
     if (e) e.preventDefault();
     if (currentDetailRequestId) {
+      const targetReqId = currentDetailRequestId;
+      closeDsarDetailView();
       if (window.runIdentityDiscoveryScan) {
-        window.runIdentityDiscoveryScan(currentDetailRequestId);
+        window.runIdentityDiscoveryScan(targetReqId);
       } else if (window.triggerDsarDiscovery) {
-        window.triggerDsarDiscovery(currentDetailRequestId);
+        window.triggerDsarDiscovery(targetReqId);
       }
     }
   };

@@ -103,6 +103,10 @@ export async function runDsarVerification(requestId) {
     card.style.display = 'block';
   }
 
+  if (window.updateStepperActiveStep) {
+    window.updateStepperActiveStep(6);
+  }
+
   if (targetIdEl) {
     targetIdEl.textContent = activeVerificationRequestId;
   }

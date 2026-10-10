@@ -3476,3 +3476,159 @@ select.input-field option {
   }
 }
 
+
+/* ══════════════════════════════════════════════════════════════════════════════ */
+/* ── ENTERPRISE DSAR PORTAL UI ELEVATION & MODERN DESIGN SYSTEM ─────────────── */
+/* ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Enterprise Glassmorphism Cards */
+.db-card {
+  background: var(--bg-card, rgba(15, 23, 42, 0.85)) !important;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08)) !important;
+  border-radius: var(--radius-lg, 16px) !important;
+  padding: 24px 28px !important;
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(14px) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative;
+}
+
+.db-card:hover {
+  border-color: rgba(6, 182, 212, 0.3) !important;
+  box-shadow: 0 12px 40px -6px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 7-Step Interactive Stepper Bar */
+.dsar-pipeline-stepper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  overflow-x: auto !important;
+  padding: 14px 18px !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: var(--radius-lg, 16px) !important;
+  backdrop-filter: blur(16px) !important;
+  margin-bottom: 24px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+.dsar-step-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-width: 100px !important;
+  opacity: 0.55 !important;
+  cursor: pointer !important;
+  padding: 8px 12px !important;
+  border-radius: var(--radius-md, 10px) !important;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  user-select: none !important;
+  border: 1px solid transparent !important;
+}
+
+.dsar-step-item:hover {
+  opacity: 0.95 !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(6, 182, 212, 0.2) !important;
+  transform: translateY(-2px) !important;
+}
+
+.dsar-step-item:active {
+  transform: scale(0.97) !important;
+}
+
+.dsar-step-item.active {
+  opacity: 1 !important;
+  transform: translateY(-1px) !important;
+}
+
+.dsar-step-item.current-step {
+  opacity: 1 !important;
+  background: rgba(6, 182, 212, 0.08) !important;
+  border: 1px solid rgba(6, 182, 212, 0.3) !important;
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.15) !important;
+}
+
+.dsar-step-badge {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  background: var(--bg-surface, #0f172a) !important;
+  border: 2px solid var(--border, rgba(255, 255, 255, 0.12)) !important;
+  color: var(--text-muted, #94a3b8) !important;
+  font-weight: 800 !important;
+  font-size: 0.85rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.22s ease !important;
+}
+
+.dsar-step-item:hover .dsar-step-badge {
+  border-color: rgba(6, 182, 212, 0.6) !important;
+  color: var(--cyan, #38bdf8) !important;
+}
+
+.dsar-step-item.active .dsar-step-badge {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(37, 99, 235, 0.2)) !important;
+  border-color: var(--cyan, #38bdf8) !important;
+  color: var(--cyan, #38bdf8) !important;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.35) !important;
+}
+
+.dsar-step-item.current-step .dsar-step-badge {
+  background: linear-gradient(135deg, #06b6d4, #2563eb) !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 18px rgba(6, 182, 212, 0.6) !important;
+  transform: scale(1.08) !important;
+}
+
+.dsar-step-label {
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  color: var(--text-muted, #94a3b8) !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  letter-spacing: -0.01em !important;
+  transition: color 0.2s ease !important;
+}
+
+.dsar-step-item.active .dsar-step-label {
+  color: var(--text-bright, #f8fafc) !important;
+}
+
+.dsar-step-item.current-step .dsar-step-label {
+  color: var(--cyan, #38bdf8) !important;
+  font-weight: 800 !important;
+}
+
+.dsar-step-divider {
+  flex: 1 !important;
+  height: 2px !important;
+  background: var(--border, rgba(255, 255, 255, 0.1)) !important;
+  min-width: 16px !important;
+  margin-top: -14px !important;
+  transition: background 0.3s ease !important;
+}
+
+.dsar-step-item.active + .dsar-step-divider {
+  background: linear-gradient(90deg, var(--cyan, #38bdf8), var(--border, rgba(255, 255, 255, 0.1))) !important;
+}
+
+/* Polished Table Rows */
+.data-table tbody tr {
+  transition: background-color 0.15s ease !important;
+}
+
+.data-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Interactive Action Buttons */
+.btn-primary:active, .btn-ghost:active {
+  transform: scale(0.98);
+}

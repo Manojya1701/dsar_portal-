@@ -130,12 +130,11 @@ export async function generateDsarCertificate(requestId) {
       showToast(`✓ Step 7 Complete: Official Certificate ${data.certificateId} Issued & Cryptographically Sealed!`, 'success');
 
       // Update progress stepper to mark Step 7 as active/completed
-      document.querySelectorAll('.dsar-step-item').forEach(item => {
-        item.classList.remove('active');
-        if (item.dataset.step === '7') {
-          item.classList.add('active');
-        }
-      });
+      if (window.updateStepperActiveStep) {
+        window.updateStepperActiveStep(7);
+      } else {
+        document.querySelectorAll('.dsar-step-item').forEach(item => item.classList.add('active'));
+      }
 
       if (card) card.scrollIntoView({ behavior: 'smooth' });
     } else {

@@ -17,6 +17,7 @@ import { initDsarCertificate } from './dsar-certificate.js';
 import { initDsarTeamConfig } from './dsar-team-config.js';
 import { initDsarSettings } from './dsar-settings.js';
 import { initDsarProfile } from './dsar-profile.js';
+import { initDsarStepper } from './dsar-stepper.js';
 import { initConsentHub } from './consent-hub.js';
 import { initTheme } from './theme.js';
 import { showToast } from './toast.js';
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize DSAR Modules with per-module error isolation
   const modules = [
+    ['DsarStepper', initDsarStepper],
     ['DsarIntake', initDsarIntake],
     ['DsarDashboard', initDsarDashboard],
     ['DsarDiscovery', initDsarDiscovery],

@@ -844,8 +844,6 @@ export function showUdpsCoreView(targetHash) {
  */
 export function initDsarIntake() {
   const navDsarBtn = document.getElementById('nav-dsar-portal');
-  const backToCoreBtn = document.getElementById('btn-back-to-udps-core');
-  const coreNavLinks = document.querySelectorAll('.nav-core-link, .app-header__brand');
 
   // Header Nav Link click
   if (navDsarBtn) {
@@ -854,22 +852,6 @@ export function initDsarIntake() {
       showDsarPortalView();
     });
   }
-
-  // Back to UDPS Core button
-  if (backToCoreBtn) {
-    backToCoreBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      showUdpsCoreView('#hero-section');
-    });
-  }
-
-  // Core navigation links
-  coreNavLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      const href = link.getAttribute('href');
-      showUdpsCoreView(href);
-    });
-  });
 
   // Setup Dynamic Channel Selection
   setupChannelSelection();
