@@ -555,6 +555,8 @@ export async function handleCreateDsarCase(e) {
       createBtn.innerHTML = '<span>➔ Create DSAR Case</span>';
     }
   }
+}
+
 /**
  * End-to-End Automated Processing of Customer Mail Request
  * Triggers complete lifecycle from email intake through discovery, impact, policy,

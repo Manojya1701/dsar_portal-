@@ -2025,7 +2025,8 @@ button {
 
 /* ── 14. PREVIEW MODAL ───────────────────────────────────────────────────── */
 
-.modal-backdrop {
+.modal-backdrop,
+.modal-overlay {
   position: fixed;
   inset: 0;
   z-index: 200;

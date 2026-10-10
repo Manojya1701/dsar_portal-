@@ -23,23 +23,33 @@ import { showToast } from './toast.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Theme
-  initTheme();
+  try { initTheme(); } catch (err) { console.warn('[Init Theme]', err); }
 
-  // Initialize DSAR Modules
-  initDsarIntake();
-  initDsarDashboard();
-  initDsarDiscovery();
-  initDsarDetail();
-  initDsarAssignment();
-  initDsarImpact();
-  initDsarPolicy();
-  initDsarExecution();
-  initDsarVerification();
-  initDsarCertificate();
-  initDsarTeamConfig();
-  initDsarSettings();
-  initDsarProfile();
-  initConsentHub();
+  // Initialize DSAR Modules with per-module error isolation
+  const modules = [
+    ['DsarIntake', initDsarIntake],
+    ['DsarDashboard', initDsarDashboard],
+    ['DsarDiscovery', initDsarDiscovery],
+    ['DsarDetail', initDsarDetail],
+    ['DsarAssignment', initDsarAssignment],
+    ['DsarImpact', initDsarImpact],
+    ['DsarPolicy', initDsarPolicy],
+    ['DsarExecution', initDsarExecution],
+    ['DsarVerification', initDsarVerification],
+    ['DsarCertificate', initDsarCertificate],
+    ['DsarTeamConfig', initDsarTeamConfig],
+    ['DsarSettings', initDsarSettings],
+    ['DsarProfile', initDsarProfile],
+    ['ConsentHub', initConsentHub]
+  ];
+
+  modules.forEach(([name, initFn]) => {
+    try {
+      if (typeof initFn === 'function') initFn();
+    } catch (err) {
+      console.error(`[Init Error in ${name}]`, err);
+    }
+  });
 
   // Expose global subview switcher for navigation bar
   window.switchDsarSubview = switchDsarSubview;
