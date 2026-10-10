@@ -488,7 +488,7 @@ router.get('/dsar/preview-email/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const history = await emailNotificationService.getEmailDispatchHistory();
-    const item = Array.isArray(history) ? history.find(h => h.id === id || h.id.includes(id)) : null;
+    const item = Array.isArray(history) ? history.find(h => h.id === id || h.id.includes(id) || h.requestId === id) : null;
     if (!item || !item.html) {
       return res.status(404).send('<div style="font-family:Arial;padding:40px;text-align:center;color:#64748b;"><h2>📬 Email preview not found or expired</h2><p>Please send a new test email to generate a live preview.</p></div>');
     }

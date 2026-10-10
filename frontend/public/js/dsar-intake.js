@@ -568,15 +568,24 @@ export async function handleProcessCustomerMailRequest() {
   const textInput = document.getElementById('intake-request-text');
   const e2eBtn = document.getElementById('btn-process-email-e2e');
 
-  const email = emailInput?.value?.trim() || '';
-  const fullName = nameInput?.value?.trim() || 'Valued Customer';
-  const requestText = textInput?.value?.trim() || 'Please permanently delete and erase all my account records, purchase logs, and telemetry under GDPR Art 17 and DPDP Act.';
+  let email = emailInput?.value?.trim() || '';
+  let fullName = nameInput?.value?.trim() || '';
+  let requestText = textInput?.value?.trim() || '';
 
+  // Zero-friction 1-click execution: auto-populate sample customer if fields are empty
   if (!email || !email.includes('@')) {
-    showToast('Please enter a valid customer email address to process request.', 'warning');
-    if (emailInput) emailInput.focus();
-    return;
+    email = 'alex.johnson@example.com';
+    if (emailInput) emailInput.value = email;
+    if (nameInput && !nameInput.value) nameInput.value = 'Alex Johnson';
+    if (textInput && !textInput.value) {
+      textInput.value = 'Please permanently delete and erase all my account records, purchase logs, and telemetry under GDPR Art 17 and DPDP Act 2023.';
+      updateLiveIntentPreview();
+    }
+    showToast('Auto-populating customer request (Alex Johnson) for end-to-end processing…', 'info');
   }
+
+  if (!fullName) fullName = nameInput?.value?.trim() || 'Alex Johnson';
+  if (!requestText) requestText = textInput?.value?.trim() || 'Please permanently delete and erase all my account records under GDPR Art 17 and DPDP Act 2023.';
 
   const modal = document.getElementById('dsar-mail-process-modal');
   const progressBar = document.getElementById('mail-process-progress-bar');
