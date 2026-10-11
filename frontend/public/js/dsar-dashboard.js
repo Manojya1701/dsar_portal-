@@ -142,6 +142,7 @@ export function switchDsarSubView(viewKey) {
   const views = {
     dashboard: document.getElementById('dsar-subview-dashboard'),
     requests: document.getElementById('dsar-subview-dashboard'),
+    email_request: document.getElementById('dsar-subview-email-request'),
     my_tasks: document.getElementById('dsar-subview-my-tasks'),
     team_tasks: document.getElementById('dsar-subview-team-tasks'),
     sla_breaches: document.getElementById('dsar-subview-dashboard'),
@@ -223,6 +224,11 @@ export function switchDsarSubView(viewKey) {
     if (views.dashboard) views.dashboard.classList.remove('hidden');
     activeFilter = 'sla_breach';
     renderDsarTable();
+  } else if (viewKey === 'email_request') {
+    if (views.email_request) {
+      views.email_request.classList.remove('hidden');
+      views.email_request.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   } else if (viewKey === 'consent_hub') {
     if (views.consent_hub) {
       views.consent_hub.classList.remove('hidden');

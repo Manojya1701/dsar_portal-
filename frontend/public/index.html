@@ -26,6 +26,7 @@
       <nav class="app-header__nav">
         <ul class="nav-links" style="display:flex; list-style:none; gap:14px; margin:0; padding:0; align-items:center;">
           <li><a href="#dsar-subview-queue" id="nav-dsar-queue" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('queue');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">📋 Request Queue</a></li>
+          <li><a href="#dsar-subview-email-request" id="nav-dsar-email" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('email_request');" style="color:#38bdf8; font-weight:700; font-size:0.85rem; background:rgba(56,189,248,0.12); padding:4px 10px; border-radius:6px; border:1px solid rgba(56,189,248,0.3); cursor:pointer;">📧 Email Request</a></li>
           <li><a href="#dsar-subview-intake" id="nav-dsar-intake" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('intake');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">➕ New Intake</a></li>
           <li><a href="#dsar-subview-discovery" id="nav-dsar-discovery" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('discovery');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">🔍 Discovery</a></li>
           <li><a href="#dsar-subview-execution" id="nav-dsar-execution" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('execution');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">⚡ Execution</a></li>
@@ -174,6 +175,11 @@
           <a class="dsar-sidebar-nav-item" data-tab="requests">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             <span>DSAR Requests</span>
+          </a>
+          <a class="dsar-sidebar-nav-item" data-tab="email_request" style="position:relative;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>Email Request</span>
+            <span style="font-size:0.62rem; font-weight:800; padding:1px 5px; background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); border-radius:10px; margin-left:auto;">AI Auto</span>
           </a>
           <a class="dsar-sidebar-nav-item" data-tab="my_tasks">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -853,6 +859,432 @@
             </div>
 
           </div> <!-- /#dsar-subview-settings -->
+
+          <!-- ═════════════════════════════════════════════════════════════════════ -->
+          <!-- ── SUB-VIEW: DSAR REQUEST THROUGH EMAIL (MATCHES ARCHITECTURE SLIDE) ─ -->
+          <!-- ═════════════════════════════════════════════════════════════════════ -->
+          <div id="dsar-subview-email-request" class="dsar-subview hidden">
+            
+            <!-- Slide Header Section -->
+            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:22px 28px; margin-bottom:20px; box-shadow:var(--shadow-sm);">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;">
+                <div>
+                  <h2 style="font-size:1.6rem; font-weight:800; color:var(--text-bright); margin:0 0 6px 0; letter-spacing:-0.02em;">
+                    DSAR Request Through Email
+                  </h2>
+                  <p style="font-size:0.9rem; color:var(--text-secondary); margin:0; max-width:760px; line-height:1.45;">
+                    A data subject sends a request by email. Segmento helps you identify, classify, verify and fulfill the request &mdash; securely and in compliance.
+                  </p>
+                </div>
+
+                <!-- Segmento Logo Brand Badge (matching slide top right) -->
+                <div style="display:flex; align-items:center; gap:10px; background:var(--bg-surface); border:1px solid var(--border); padding:8px 16px; border-radius:10px;">
+                  <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+                    <path d="M6 10L14 4L22 10L14 16L6 10Z" fill="#06b6d4"/>
+                    <path d="M10 22L18 16L26 22L18 28L10 22Z" fill="#2563eb"/>
+                  </svg>
+                  <div>
+                    <div style="font-size:1.05rem; font-weight:900; color:var(--text-bright); letter-spacing:-0.02em;">Segmento</div>
+                    <div style="font-size:0.65rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:0.06em;">Privacy &bull; Governance &bull; Data</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top 5-Step Horizontal Flow (Step 1 -> 5) -->
+            <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; margin-bottom:24px;">
+              <!-- Step 1: Customer sends email -->
+              <div class="email-step-bubble" style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:16px 14px; position:relative; display:flex; flex-direction:column; align-items:center; text-align:center;">
+                <div style="width:44px; height:44px; border-radius:50%; background:rgba(37,99,235,0.12); border:2px solid rgba(37,99,235,0.4); display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:10px; color:#3b82f6;">
+                  👤✉️
+                </div>
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                  <span style="width:20px; height:20px; border-radius:50%; background:#2563eb; color:#fff; font-size:0.7rem; font-weight:800; display:inline-flex; align-items:center; justify-content:center;">1</span>
+                  <span style="font-size:0.84rem; font-weight:700; color:var(--text-bright);">Customer sends email</span>
+                </div>
+                <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.35;">The data subject sends a DSAR request via email.</div>
+                <div style="position:absolute; right:-14px; top:42%; z-index:2; color:var(--text-muted); font-size:1.1rem; font-weight:bold;">→</div>
+              </div>
+
+              <!-- Step 2: Classify & extract -->
+              <div class="email-step-bubble" style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:16px 14px; position:relative; display:flex; flex-direction:column; align-items:center; text-align:center;">
+                <div style="width:44px; height:44px; border-radius:50%; background:rgba(168,85,247,0.12); border:2px solid rgba(168,85,247,0.4); display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:10px; color:#a855f7;">
+                  🧠⚡
+                </div>
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                  <span style="width:20px; height:20px; border-radius:50%; background:#8b5cf6; color:#fff; font-size:0.7rem; font-weight:800; display:inline-flex; align-items:center; justify-content:center;">2</span>
+                  <span style="font-size:0.84rem; font-weight:700; color:var(--text-bright);">Classify &amp; extract</span>
+                </div>
+                <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.35;">AI identifies the request type, extracts key details and attachments.</div>
+                <div style="position:absolute; right:-14px; top:42%; z-index:2; color:var(--text-muted); font-size:1.1rem; font-weight:bold;">→</div>
+              </div>
+
+              <!-- Step 3: Verify identity -->
+              <div class="email-step-bubble" style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:16px 14px; position:relative; display:flex; flex-direction:column; align-items:center; text-align:center;">
+                <div style="width:44px; height:44px; border-radius:50%; background:rgba(16,185,129,0.12); border:2px solid rgba(16,185,129,0.4); display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:10px; color:#10b981;">
+                  🛡️✓
+                </div>
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                  <span style="width:20px; height:20px; border-radius:50%; background:#10b981; color:#fff; font-size:0.7rem; font-weight:800; display:inline-flex; align-items:center; justify-content:center;">3</span>
+                  <span style="font-size:0.84rem; font-weight:700; color:var(--text-bright);">Verify identity</span>
+                </div>
+                <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.35;">Confirm the requester's identity using secure verification processes.</div>
+                <div style="position:absolute; right:-14px; top:42%; z-index:2; color:var(--text-muted); font-size:1.1rem; font-weight:bold;">→</div>
+              </div>
+
+              <!-- Step 4: Discover personal data -->
+              <div class="email-step-bubble" style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:16px 14px; position:relative; display:flex; flex-direction:column; align-items:center; text-align:center;">
+                <div style="width:44px; height:44px; border-radius:50%; background:rgba(245,158,11,0.12); border:2px solid rgba(245,158,11,0.4); display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:10px; color:#f59e0b;">
+                  🗄️
+                </div>
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                  <span style="width:20px; height:20px; border-radius:50%; background:#f59e0b; color:#fff; font-size:0.7rem; font-weight:800; display:inline-flex; align-items:center; justify-content:center;">4</span>
+                  <span style="font-size:0.84rem; font-weight:700; color:var(--text-bright);">Discover personal data</span>
+                </div>
+                <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.35;">Search across connected systems to locate relevant personal data.</div>
+                <div style="position:absolute; right:-14px; top:42%; z-index:2; color:var(--text-muted); font-size:1.1rem; font-weight:bold;">→</div>
+              </div>
+
+              <!-- Step 5: Respond & close -->
+              <div class="email-step-bubble" style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:16px 14px; position:relative; display:flex; flex-direction:column; align-items:center; text-align:center;">
+                <div style="width:44px; height:44px; border-radius:50%; background:rgba(99,102,241,0.12); border:2px solid rgba(99,102,241,0.4); display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:10px; color:#6366f1;">
+                  📜✓
+                </div>
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                  <span style="width:20px; height:20px; border-radius:50%; background:#6366f1; color:#fff; font-size:0.7rem; font-weight:800; display:inline-flex; align-items:center; justify-content:center;">5</span>
+                  <span style="font-size:0.84rem; font-weight:700; color:var(--text-bright);">Respond &amp; close</span>
+                </div>
+                <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.35;">Prepare the response, get approvals and deliver within the required timeframe.</div>
+              </div>
+            </div>
+
+            <!-- 3-Column Main Grid (Matching exact slide visual layout) -->
+            <div style="display:grid; grid-template-columns:1.15fr 1fr 1.15fr; gap:20px; align-items:start; margin-bottom:24px;">
+              
+              <!-- ── COLUMN 1: Example: DSAR Request via Email ────────────── -->
+              <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:18px 20px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.1rem;">✉️</span>
+                    <span style="font-size:0.92rem; font-weight:800; color:var(--text-bright);">Example: DSAR Request via Email</span>
+                  </div>
+                  <div style="display:flex; gap:6px;">
+                    <button type="button" id="btn-email-quick-alex" style="font-size:0.68rem; font-weight:700; padding:3px 8px; border-radius:6px; background:rgba(37,99,235,0.12); color:#3b82f6; border:1px solid rgba(37,99,235,0.3); cursor:pointer;">Alex Carter (Access)</button>
+                    <button type="button" id="btn-email-quick-priya" style="font-size:0.68rem; font-weight:700; padding:3px 8px; border-radius:6px; background:rgba(16,185,129,0.12); color:#10b981; border:1px solid rgba(16,185,129,0.3); cursor:pointer;">Priya Nair (Erasure)</button>
+                  </div>
+                </div>
+
+                <!-- Inbound Mock Email Client Window -->
+                <div style="background:var(--bg-surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,0.05);">
+                  <!-- Window Title Bar with 3 dots -->
+                  <div style="background:var(--bg-input); padding:8px 12px; display:flex; align-items:center; gap:6px; border-bottom:1px solid var(--border);">
+                    <span style="width:10px; height:10px; border-radius:50%; background:#ef4444; display:inline-block;"></span>
+                    <span style="width:10px; height:10px; border-radius:50%; background:#f59e0b; display:inline-block;"></span>
+                    <span style="width:10px; height:10px; border-radius:50%; background:#10b981; display:inline-block;"></span>
+                    <span style="font-size:0.68rem; color:var(--text-muted); margin-left:8px; font-weight:600;">Inbound Mailbox &bull; privacy@yourcompany.com</span>
+                  </div>
+
+                  <!-- Inbound Email Header Fields -->
+                  <div style="padding:12px 14px; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:6px; font-size:0.78rem;">
+                    <div style="display:flex; align-items:center;">
+                      <span style="width:60px; color:var(--text-muted); font-weight:600;">From:</span>
+                      <input type="text" id="email-inbound-from" value="Alex Carter &lt;alex.carter@example.com&gt;" style="flex:1; background:transparent; border:none; color:var(--text-bright); font-size:0.78rem; font-weight:600; outline:none;">
+                    </div>
+                    <div style="display:flex; align-items:center;">
+                      <span style="width:60px; color:var(--text-muted); font-weight:600;">To:</span>
+                      <span style="color:var(--text-secondary); font-weight:600;">privacy@yourcompany.com</span>
+                    </div>
+                    <div style="display:flex; align-items:center;">
+                      <span style="width:60px; color:var(--text-muted); font-weight:600;">Subject:</span>
+                      <input type="text" id="email-inbound-subject" value="Data Subject Access Request" style="flex:1; background:transparent; border:none; color:var(--text-bright); font-size:0.78rem; font-weight:700; outline:none;">
+                    </div>
+                    <div style="display:flex; align-items:center;">
+                      <span style="width:60px; color:var(--text-muted); font-weight:600;">Intent:</span>
+                      <input type="text" id="email-inbound-type" value="Access &amp; Export" style="flex:1; background:transparent; border:none; color:#3b82f6; font-size:0.75rem; font-weight:700; outline:none;">
+                    </div>
+                  </div>
+
+                  <!-- Inbound Email Body -->
+                  <div style="padding:14px; font-size:0.78rem; line-height:1.55; color:var(--text-secondary);">
+                    <textarea id="email-inbound-body" rows="10" style="width:100%; background:transparent; border:none; color:var(--text-secondary); font-size:0.78rem; line-height:1.55; resize:none; outline:none; font-family:inherit;">Hi,
+
+I would like to make a data subject access request under the applicable privacy law. Please provide all personal data you hold about me, including information on:
+
+• My profile details
+• Purchase history
+• Communication records
+• Any third-party data you may have
+
+Please let me know if you need any additional information from me.
+
+Regards,
+Alex Carter
+alex.carter@example.com</textarea>
+                  </div>
+
+                  <!-- Inbound Email Attachment Pill -->
+                  <div style="padding:10px 14px; background:var(--bg-input); border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <div style="width:28px; height:28px; border-radius:6px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); display:flex; align-items:center; justify-content:center; color:#ef4444; font-size:0.9rem;">
+                        📄
+                      </div>
+                      <div>
+                        <div style="font-size:0.75rem; font-weight:700; color:var(--text-bright);">Identity Document.pdf</div>
+                        <div style="font-size:0.65rem; color:var(--text-muted);">1.2 MB &bull; Government Issued ID</div>
+                      </div>
+                    </div>
+                    <span style="font-size:0.65rem; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(16,185,129,0.15); color:#10b981;">Verified</span>
+                  </div>
+                </div>
+
+                <!-- Action Button: Ingest & Process Email -->
+                <button type="button" id="btn-email-flow-process" class="btn-primary" style="width:100%; padding:14px 18px; font-weight:800; font-size:0.92rem; display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg, #06b6d4 0%, #2563eb 100%); border-radius:10px; box-shadow:0 4px 14px rgba(6,182,212,0.35); border:none; cursor:pointer; color:#ffffff;">
+                  <span>⚡ Ingest &amp; Process Email Request with AI</span>
+                </button>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:0.7rem; color:var(--text-muted);">Triggers NLP Extraction &amp; Discovery</span>
+                  <button type="button" id="btn-email-flow-reset" style="background:none; border:none; color:var(--text-muted); font-size:0.72rem; cursor:pointer; text-decoration:underline;">Reset Stepper</button>
+                </div>
+              </div>
+
+              <!-- ── COLUMN 2: Segmento DSAR Processing ───────────────────── -->
+              <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:18px 20px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:12px;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+                    <path d="M6 10L14 4L22 10L14 16L6 10Z" fill="#06b6d4"/>
+                    <path d="M10 22L18 16L26 22L18 28L10 22Z" fill="#2563eb"/>
+                  </svg>
+                  <span style="font-size:0.92rem; font-weight:800; color:var(--text-bright);">Segmento DSAR Processing</span>
+                </div>
+
+                <!-- Vertical 6-Step Flow Container -->
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  
+                  <!-- Step 1: Ingest Email Request -->
+                  <div id="email-proc-step-1" class="email-proc-card status-pending" style="background:var(--bg-surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; transition:all 0.3s ease;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                      <span style="font-size:0.9rem;">✉️</span>
+                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-bright);">1. Ingest Email Request</span>
+                      <span class="proc-status-text" style="margin-left:auto; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:10px; background:var(--bg-input); color:var(--text-muted);">Pending Intake</span>
+                    </div>
+                    <ul style="margin:0; padding-left:22px; font-size:0.7rem; color:var(--text-secondary); line-height:1.45;">
+                      <li>Parse email content and attachments</li>
+                      <li>Extract key information using AI</li>
+                      <li>Create DSAR ticket</li>
+                    </ul>
+                  </div>
+                  <div style="text-align:center; color:var(--text-muted); font-size:0.9rem; line-height:0.8;">↓</div>
+
+                  <!-- Step 2: Classify Request -->
+                  <div id="email-proc-step-2" class="email-proc-card status-pending" style="background:var(--bg-surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; transition:all 0.3s ease;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                      <span style="font-size:0.9rem;">🧠</span>
+                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-bright);">2. Classify Request</span>
+                      <span class="proc-status-text" style="margin-left:auto; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:10px; background:var(--bg-input); color:var(--text-muted);">Pending Classification</span>
+                    </div>
+                    <ul style="margin:0; padding-left:22px; font-size:0.7rem; color:var(--text-secondary); line-height:1.45;">
+                      <li>Identify request type (access, deletion, etc.)</li>
+                      <li>Determine jurisdiction and applicable rules</li>
+                    </ul>
+                  </div>
+                  <div style="text-align:center; color:var(--text-muted); font-size:0.9rem; line-height:0.8;">↓</div>
+
+                  <!-- Step 3: Identity Verification -->
+                  <div id="email-proc-step-3" class="email-proc-card status-pending" style="background:var(--bg-surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; transition:all 0.3s ease;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                      <span style="font-size:0.9rem;">🛡️</span>
+                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-bright);">3. Identity Verification</span>
+                      <span class="proc-status-text" style="margin-left:auto; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:10px; background:var(--bg-input); color:var(--text-muted);">Pending Verification</span>
+                    </div>
+                    <ul style="margin:0; padding-left:22px; font-size:0.7rem; color:var(--text-secondary); line-height:1.45;">
+                      <li>Verify customer identity</li>
+                      <li>Check for fraud and risk signals</li>
+                    </ul>
+                  </div>
+                  <div style="text-align:center; color:var(--text-muted); font-size:0.9rem; line-height:0.8;">↓</div>
+
+                  <!-- Step 4: Find Personal Data -->
+                  <div id="email-proc-step-4" class="email-proc-card status-pending" style="background:var(--bg-surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; transition:all 0.3s ease;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                      <span style="font-size:0.9rem;">🗄️</span>
+                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-bright);">4. Find Personal Data</span>
+                      <span class="proc-status-text" style="margin-left:auto; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:10px; background:var(--bg-input); color:var(--text-muted);">Pending Discovery</span>
+                    </div>
+                    <ul style="margin:0; padding-left:22px; font-size:0.7rem; color:var(--text-secondary); line-height:1.45;">
+                      <li>Search across CRM, orders, support, analytics</li>
+                      <li>Map and consolidate results</li>
+                    </ul>
+                  </div>
+                  <div style="text-align:center; color:var(--text-muted); font-size:0.9rem; line-height:0.8;">↓</div>
+
+                  <!-- Step 5: Task & Workflow Management -->
+                  <div id="email-proc-step-5" class="email-proc-card status-pending" style="background:var(--bg-surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; transition:all 0.3s ease;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                      <span style="font-size:0.9rem;">👥</span>
+                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-bright);">5. Task &amp; Workflow Management</span>
+                      <span class="proc-status-text" style="margin-left:auto; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:10px; background:var(--bg-input); color:var(--text-muted);">Pending Workflow</span>
+                    </div>
+                    <ul style="margin:0; padding-left:22px; font-size:0.7rem; color:var(--text-secondary); line-height:1.45;">
+                      <li>Assign tasks to relevant teams</li>
+                      <li>Track progress and dependencies</li>
+                      <li>Apply policy and compliance rules</li>
+                    </ul>
+                  </div>
+                  <div style="text-align:center; color:var(--text-muted); font-size:0.9rem; line-height:0.8;">↓</div>
+
+                  <!-- Step 6: Prepare Response -->
+                  <div id="email-proc-step-6" class="email-proc-card status-pending" style="background:var(--bg-surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; transition:all 0.3s ease;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                      <span style="font-size:0.9rem;">📜</span>
+                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-bright);">6. Prepare Response</span>
+                      <span class="proc-status-text" style="margin-left:auto; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:10px; background:var(--bg-input); color:var(--text-muted);">Pending Response</span>
+                    </div>
+                    <ul style="margin:0; padding-left:22px; font-size:0.7rem; color:var(--text-secondary); line-height:1.45;">
+                      <li>Review and approve</li>
+                      <li>Generate export / correction / deletion actions</li>
+                      <li>Deliver response and close request</li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- ── COLUMN 3: Result & Compliance ───────────────────────── -->
+              <div style="display:flex; flex-direction:column; gap:16px;">
+                
+                <!-- Top Card: Result - Request Completed -->
+                <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:18px 20px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:12px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:24px; height:24px; border-radius:50%; background:#10b981; color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800;">✓</div>
+                    <div>
+                      <div style="font-size:0.92rem; font-weight:800; color:var(--text-bright);">Result</div>
+                      <div style="font-size:0.75rem; font-weight:700; color:#10b981;">Request completed</div>
+                    </div>
+                  </div>
+
+                  <div style="font-size:0.75rem; color:var(--text-secondary); line-height:1.4;">
+                    The data subject receives a secure response with their personal data (or the requested action) within the applicable timeframe.
+                  </div>
+
+                  <!-- Result Placeholder (Before Execution) -->
+                  <div id="email-flow-result-placeholder" style="background:var(--bg-surface); border:1px dashed var(--border); border-radius:10px; padding:28px 16px; text-align:center;">
+                    <div style="font-size:2rem; margin-bottom:8px; opacity:0.6;">📬</div>
+                    <div style="font-size:0.82rem; font-weight:700; color:var(--text-bright); margin-bottom:4px;">Awaiting Execution</div>
+                    <div style="font-size:0.72rem; color:var(--text-muted); line-height:1.4;">Click "Ingest &amp; Process Email Request" in Column 1 to simulate automated delivery.</div>
+                  </div>
+
+                  <!-- Outbound Response Email Window (Active After Execution) -->
+                  <div id="email-flow-result-content" class="hidden" style="background:var(--bg-surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,0.05);">
+                    <!-- Window Title Bar with 3 dots -->
+                    <div style="background:var(--bg-input); padding:8px 12px; display:flex; align-items:center; gap:6px; border-bottom:1px solid var(--border);">
+                      <span style="width:10px; height:10px; border-radius:50%; background:#ef4444; display:inline-block;"></span>
+                      <span style="width:10px; height:10px; border-radius:50%; background:#f59e0b; display:inline-block;"></span>
+                      <span style="width:10px; height:10px; border-radius:50%; background:#10b981; display:inline-block;"></span>
+                      <span style="font-size:0.68rem; color:var(--text-muted); margin-left:8px; font-weight:600;">Outbound Response &bull; Delivered</span>
+                    </div>
+
+                    <!-- Outbound Header -->
+                    <div style="padding:10px 14px; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:4px; font-size:0.76rem;">
+                      <div><span style="color:var(--text-muted); font-weight:600;">From:</span> <span style="font-weight:600; color:var(--text-bright);">support@yourcompany.com</span></div>
+                      <div><span style="color:var(--text-muted); font-weight:600;">To:</span> <span id="email-outbound-to" style="font-weight:600; color:var(--text-bright);">alex.carter@example.com</span></div>
+                      <div><span style="color:var(--text-muted); font-weight:600;">Subject:</span> <span style="font-weight:700; color:#10b981;">Your DSAR Request - Completed</span></div>
+                    </div>
+
+                    <!-- Outbound Body -->
+                    <div style="padding:12px 14px; font-size:0.76rem; line-height:1.5; color:var(--text-secondary);">
+                      <p style="margin:0 0 8px 0;">Hi <span id="email-outbound-name" style="font-weight:700; color:var(--text-bright);">Alex</span>,</p>
+                      <p style="margin:0 0 8px 0;">We have completed your data subject access request. Please find your personal data attached to this email.</p>
+                      <p style="margin:0 0 8px 0;">If you have any questions, feel free to reach out to us.</p>
+                      <p style="margin:0;">Regards,<br><strong>Privacy Team</strong></p>
+                    </div>
+
+                    <!-- Attachment Zip File -->
+                    <div style="padding:10px 14px; background:var(--bg-input); border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:28px; height:28px; border-radius:6px; background:rgba(37,99,235,0.15); border:1px solid rgba(37,99,235,0.3); display:flex; align-items:center; justify-content:center; color:#3b82f6; font-size:0.9rem;">
+                          🗜️
+                        </div>
+                        <div>
+                          <div style="font-size:0.75rem; font-weight:700; color:var(--text-bright);">Your_Personal_Data.zip</div>
+                          <div style="font-size:0.65rem; color:var(--text-muted);">8.4 MB &bull; Encrypted ZIP Archive</div>
+                        </div>
+                      </div>
+                      <span style="font-size:0.65rem; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(16,185,129,0.15); color:#10b981;">Attached</span>
+                    </div>
+
+                    <!-- Live Webmail Buttons -->
+                    <div style="padding:12px 14px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:8px;">
+                      <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted);">
+                        <span>Ticket: <strong id="email-result-req-id" style="color:var(--text-bright);">DSAR-2026-0001</strong></span>
+                        <span>Cert: <strong id="email-result-cert-id" style="color:#10b981;">CERT-0001</strong></span>
+                      </div>
+                      <a id="btn-email-result-webmail" href="#" target="_blank" class="btn-primary" style="display:flex; align-items:center; justify-content:center; gap:6px; padding:9px 12px; font-size:0.8rem; font-weight:700; background:#10b981; border-radius:8px; text-decoration:none; color:#ffffff;">
+                        <span>🌐 View Live Dispatched Webmail</span>
+                      </a>
+                      <button type="button" id="btn-email-result-certificate" class="btn-secondary" style="padding:8px 12px; font-size:0.78rem; font-weight:600; cursor:pointer;">
+                        <span>📜 View Ticket Audit Details</span>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- Bottom Card: Fully Compliant -->
+                <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:18px 20px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:12px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:24px; height:24px; border-radius:50%; background:rgba(16,185,129,0.15); color:#10b981; display:flex; align-items:center; justify-content:center; font-size:0.9rem;">🛡️</div>
+                    <div style="font-size:0.92rem; font-weight:800; color:var(--text-bright);">Fully Compliant</div>
+                  </div>
+
+                  <div style="display:flex; flex-direction:column; gap:8px; font-size:0.78rem; color:var(--text-secondary);">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span style="color:#10b981; font-weight:800;">✓</span>
+                      <span>GDPR &amp; India DPDP Act ready</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span style="color:#10b981; font-weight:800;">✓</span>
+                      <span>Audit trail and evidence</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span style="color:#10b981; font-weight:800;">✓</span>
+                      <span>Secure and controlled data access</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span style="color:#10b981; font-weight:800;">✓</span>
+                      <span>Timely response and reporting</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Bottom Compliance Assurance Footer Bar (matching slide bottom) -->
+            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:14px 24px; display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:12px; font-size:0.82rem; font-weight:700; color:var(--text-secondary);">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="color:var(--cyan);">🛡️</span>
+                <span>Privacy by design</span>
+              </div>
+              <span style="color:var(--border);">|</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="color:#3b82f6;">🔒</span>
+                <span>Secure data handling</span>
+              </div>
+              <span style="color:var(--border);">|</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="color:#a855f7;">🔗</span>
+                <span>Connected systems</span>
+              </div>
+              <span style="color:var(--border);">|</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="color:#10b981;">✅</span>
+                <span>Compliance ready</span>
+              </div>
+            </div>
+
+          </div> <!-- /#dsar-subview-email-request -->
 
           <!-- ── SUB-VIEW 7: CONSENT HUB & SELF-SERVE OPT-OUT MATRIX ──────────── -->
           <div id="dsar-subview-consent-hub" class="dsar-subview hidden">
@@ -1965,8 +2397,12 @@
               <span>⚡ One-Click Auto-Process Mail Request (End-to-End)</span>
             </button>
             <div style="font-size:0.7rem; color:var(--text-muted); text-align:center; margin-top:6px; line-height:1.35;">
-              Processes customer email request through all 7 lifecycle stages & delivers verified certificate to customer inbox.
+              Processes customer email request through all 7 lifecycle stages &amp; delivers verified certificate to customer inbox.
             </div>
+
+            <button type="button" onclick="if(window.switchDsarSubview) window.switchDsarSubview('email_request');" style="width:100%; margin-top:8px; padding:8px 12px; font-weight:700; font-size:0.78rem; display:flex; align-items:center; justify-content:center; gap:6px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.3); border-radius:8px; cursor:pointer; color:#38bdf8;">
+              <span>📧 Open "DSAR Request Through Email" Architecture View ➔</span>
+            </button>
 
           </div>
 

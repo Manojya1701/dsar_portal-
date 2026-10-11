@@ -3632,3 +3632,43 @@ select.input-field option {
 .btn-primary:active, .btn-ghost:active {
   transform: scale(0.98);
 }
+
+/* ── DSAR Request Through Email Interactive Flow Styles ─────────────────── */
+.email-proc-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.email-proc-card.status-active {
+  border-color: #3b82f6 !important;
+  background: rgba(59, 130, 246, 0.08) !important;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.25) !important;
+  transform: translateY(-2px);
+}
+
+.email-proc-card.status-active .proc-status-text {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+
+.email-proc-card.status-completed {
+  border-color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.06) !important;
+}
+
+.email-proc-card.status-completed .proc-status-text {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+}
+
+.email-step-bubble {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.email-step-bubble:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
