@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Segmento DSAR Portal &amp; Consent Hub</title>
+  <title>Segmento Protect — Enterprise DSAR &amp; Statutory Privacy Portal</title>
   <meta name="description" content="Segmento Enterprise DSAR Automation, GDPR Art. 17/7(3) & Apache Kafka Downstream Enforcement.">
   <link rel="stylesheet" href="css/style.css?v=2.0.0">
 </head>
@@ -17,21 +17,20 @@
       <a href="/" class="app-header__brand logo-wrap" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
         <img src="assets/images/segmento-icon.svg" alt="Segmento" class="brand-segmento-logo" style="width:32px; height:32px;">
         <div class="brand-text-stack">
-          <span class="brand-company-name" style="font-size:1.15rem; font-weight:800; color:var(--text-bright);">Segmento</span>
-          <span class="brand-product-subtitle" style="font-size:0.75rem; font-weight:700; color:var(--cyan); text-transform:uppercase; letter-spacing:0.05em;">DSAR &amp; Consent Portal</span>
+          <span class="brand-company-name" style="font-size:1.15rem; font-weight:800; color:var(--text-bright);">Segmento Protect</span>
+          <span class="brand-product-subtitle" style="font-size:0.72rem; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:0.06em;">Enterprise DSAR &amp; Privacy Portal</span>
         </div>
       </a>
 
       <!-- Center Navigation Links -->
       <nav class="app-header__nav">
-        <ul class="nav-links" style="display:flex; list-style:none; gap:14px; margin:0; padding:0; align-items:center;">
-          <li><a href="#dsar-subview-queue" id="nav-dsar-queue" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('queue');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">📋 Request Queue</a></li>
-          <li><a href="#dsar-subview-email-request" id="nav-dsar-email" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('email_request');" style="color:#38bdf8; font-weight:700; font-size:0.85rem; background:rgba(56,189,248,0.12); padding:4px 10px; border-radius:6px; border:1px solid rgba(56,189,248,0.3); cursor:pointer;">📧 Email Request</a></li>
-          <li><a href="#dsar-subview-intake" id="nav-dsar-intake" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('intake');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">➕ New Intake</a></li>
-          <li><a href="#dsar-subview-discovery" id="nav-dsar-discovery" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('discovery');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">🔍 Discovery</a></li>
-          <li><a href="#dsar-subview-execution" id="nav-dsar-execution" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('execution');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">⚡ Execution</a></li>
-          <li><a href="#dsar-subview-consent-hub" id="nav-dsar-consent" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('consent_hub');" style="color:#a78bfa; font-weight:700; font-size:0.85rem; background:rgba(139,92,246,0.12); padding:4px 10px; border-radius:6px; border:1px solid rgba(139,92,246,0.3); cursor:pointer;">✋ Consent Hub</a></li>
-          <li><a href="#dsar-subview-settings" id="nav-dsar-settings" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('settings');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">⚙️ Settings</a></li>
+        <ul class="nav-links" style="display:flex; list-style:none; gap:10px; margin:0; padding:0; align-items:center;">
+          <li><a href="#dashboard" id="nav-dsar-dashboard" class="nav-link active" onclick="if(window.switchDsarSubview) window.switchDsarSubview('dashboard');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">📊 Dashboard</a></li>
+          <li><a href="#queue" id="nav-dsar-queue" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('queue');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">📋 Request Queue</a></li>
+          <li><a href="#email-request" id="nav-dsar-email" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('email_request');" style="color:var(--primary); font-weight:700; font-size:0.85rem; background:rgba(37,99,235,0.08); padding:5px 12px; border-radius:6px; border:1px solid rgba(37,99,235,0.25); cursor:pointer;">📧 DSAR Through Email <span style="font-size:0.65rem; background:var(--primary); color:#ffffff; padding:1px 6px; border-radius:10px; margin-left:4px;">AI Auto</span></a></li>
+          <li><a href="#pipeline" id="nav-dsar-pipeline" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('pipeline');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">⚡ 7-Stage Workflow</a></li>
+          <li><a href="#consent-hub" id="nav-dsar-consent" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('consent_hub');" style="color:var(--purple); font-weight:700; font-size:0.85rem; background:rgba(79,70,229,0.08); padding:5px 12px; border-radius:6px; border:1px solid rgba(79,70,229,0.25); cursor:pointer;">✋ Consent Hub</a></li>
+          <li><a href="#settings" id="nav-dsar-settings" class="nav-link" onclick="if(window.switchDsarSubview) window.switchDsarSubview('settings');" style="color:var(--text-primary); font-weight:600; font-size:0.85rem; cursor:pointer;">⚙️ Settings &amp; SLA</a></li>
         </ul>
       </nav>
 
@@ -2151,7 +2150,33 @@ Please let me know if you need any additional information from me.</textarea>
     <!-- ═════════════════════════════════════════════════════════════════════════ -->
     <!-- ── 7-STAGE DSAR PRIVACY EXECUTION ENGINE (STEPS 1 - 7) ───────────────── -->
     <!-- ═════════════════════════════════════════════════════════════════════════ -->
-    <div id="dsar-deep-pipeline-section" style="margin-top:28px;">
+    <!-- ═════════════════════════════════════════════════════════════════════════ -->
+    <!-- ── DEDICATED SUBVIEW: 7-STAGE DSAR PRIVACY EXECUTION WIZARD ───────────── -->
+    <!-- ═════════════════════════════════════════════════════════════════════════ -->
+    <div id="dsar-subview-pipeline" class="dsar-subview hidden" style="margin-top:14px;">
+      
+      <!-- Stepper Top Bar & Quick Back to Dashboard Button -->
+      <div class="db-card" style="margin-bottom:20px; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <button type="button" class="btn-ghost btn-sm" onclick="if(window.switchDsarSubview) window.switchDsarSubview('dashboard');" style="display:inline-flex; align-items:center; gap:6px; font-weight:700; color:var(--text-primary); cursor:pointer;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>Back to Dashboard</span>
+          </button>
+          <span style="color:var(--border);">|</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:24px; height:24px; border-radius:6px; background:rgba(37,99,235,0.1); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800;">⚡</div>
+            <strong style="font-size:0.95rem; color:var(--text-bright);">7-Stage Statutory DSAR Execution Engine</strong>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="meta-pill primary" style="font-size:0.72rem;">DPDP Act 2023 Sec. 12</span>
+          <span class="meta-pill success" style="font-size:0.72rem;">GDPR Art. 17 Verified</span>
+          <span class="meta-pill neutral" style="font-size:0.72rem;">Cryptographic SHA-256 Ledger</span>
+        </div>
+      </div>
+
+      <div id="dsar-deep-pipeline-section" style="margin-top:0;">
       
       <!-- 7-Step Pipeline Progress Stepper Bar -->
       <div class="db-card" style="margin-bottom:24px; padding:18px 24px;">
@@ -3320,6 +3345,7 @@ Please let me know if you need any additional information from me.</textarea>
 
       </div>
     </div> <!-- /#dsar-deep-pipeline-section -->
+    </div> <!-- /#dsar-subview-pipeline -->
 
     </div> <!-- /#dsar-portal-workspace -->
   </main>

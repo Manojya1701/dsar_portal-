@@ -1,54 +1,15 @@
 /* ==========================================================================
-   UNIVERSAL DATA PROTECTION SYSTEM (UDPS) — ENTERPRISE SAAS DESIGN SYSTEM
-   Supports Dark Theme (Default) and Light Theme via [data-theme="light"]
+   SEGMENTO PROTECT — ENTERPRISE DSAR SAAS DESIGN SYSTEM
+   Professional High-Trust Privacy Operations Console (OneTrust / Transcend Grade)
+   Supports Light Theme (Default) and Dark Theme via [data-theme="dark"]
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-/* ── 1. DESIGN TOKENS ────────────────────────────────────────────────────── */
+/* ── 1. DESIGN TOKENS (LIGHT THEME DEFAULT) ───────────────────────────────── */
 
 :root {
-  /* Color Palette - Dark Theme (Default) */
-  --bg-primary: #060913;
-  --bg-surface: rgba(15, 23, 42, 0.75);
-  --bg-card: rgba(15, 23, 42, 0.85);
-  --bg-elevated: #1e293b;
-  --bg-input: #0a0f1d;
-  
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(56, 189, 248, 0.4);
-  --border-focus: #38bdf8;
-  
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
-
-  --purple: #818cf8;
-  --purple-glow: rgba(129, 140, 248, 0.15);
-  --cyan: #38bdf8;
-  --cyan-glow: rgba(56, 189, 248, 0.15);
-  --green: #4ade80;
-  --green-glow: rgba(74, 222, 128, 0.15);
-  --amber: #fbbf24;
-  --amber-glow: rgba(251, 191, 36, 0.15);
-  --red: #f87171;
-  --red-glow: rgba(248, 113, 113, 0.15);
-
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 26px;
-
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 12px 32px -8px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 24px 48px -12px rgba(0, 0, 0, 0.7);
-
-  --dur: 0.2s;
-  --max-width: 1280px;
-}
-
-/* Light Theme Tokens */
-[data-theme="light"] {
+  /* Enterprise B2B SaaS Clean Light Palette (Default) */
   --bg-primary: #f8fafc;
   --bg-surface: #ffffff;
   --bg-card: #ffffff;
@@ -56,27 +17,87 @@
   --bg-input: #ffffff;
 
   --border: #e2e8f0;
-  --border-hover: #0284c7;
-  --border-focus: #0284c7;
+  --border-subtle: #f1f5f9;
+  --border-hover: #cbd5e1;
+  --border-focus: #2563eb;
 
+  --text-bright: #0f172a;
   --text-primary: #0f172a;
-  --text-secondary: #334155;
+  --text-secondary: #475569;
   --text-muted: #64748b;
+
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-glow: rgba(37, 99, 235, 0.08);
 
   --purple: #4f46e5;
   --purple-glow: rgba(79, 70, 229, 0.08);
   --cyan: #0284c7;
   --cyan-glow: rgba(2, 132, 199, 0.08);
-  --green: #16a34a;
-  --green-glow: rgba(22, 163, 74, 0.08);
+  --blue: #2563eb;
+  --blue-glow: rgba(37, 99, 235, 0.08);
+  --green: #059669;
+  --emerald: #059669;
+  --green-glow: rgba(5, 150, 105, 0.08);
   --amber: #d97706;
   --amber-glow: rgba(217, 119, 6, 0.08);
   --red: #dc2626;
   --red-glow: rgba(220, 38, 38, 0.08);
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.12);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+
+  --dur: 0.2s;
+  --max-width: 1360px;
+}
+
+/* Dark Theme Tokens (Sleek Midnight Slate) */
+[data-theme="dark"] {
+  --bg-primary: #0b0f19;
+  --bg-surface: #111827;
+  --bg-card: #151e32;
+  --bg-elevated: #1e293b;
+  --bg-input: #0f172a;
+
+  --border: #1e293b;
+  --border-subtle: #172033;
+  --border-hover: #334155;
+  --border-focus: #38bdf8;
+
+  --text-bright: #ffffff;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --primary: #38bdf8;
+  --primary-hover: #0284c7;
+  --primary-glow: rgba(56, 189, 248, 0.15);
+
+  --purple: #818cf8;
+  --purple-glow: rgba(129, 140, 248, 0.15);
+  --cyan: #38bdf8;
+  --cyan-glow: rgba(56, 189, 248, 0.15);
+  --blue: #38bdf8;
+  --blue-glow: rgba(56, 189, 248, 0.15);
+  --green: #10b981;
+  --emerald: #10b981;
+  --green-glow: rgba(16, 185, 129, 0.15);
+  --amber: #f59e0b;
+  --amber-glow: rgba(245, 158, 11, 0.15);
+  --red: #ef4444;
+  --red-glow: rgba(239, 68, 68, 0.15);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.7);
 }
 
 /* ── 2. GLOBAL RESET & BASE ──────────────────────────────────────────────── */
@@ -95,8 +116,6 @@ html {
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg-primary);
-  background-image: radial-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px);
-  background-size: 32px 32px;
   color: var(--text-primary);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -104,9 +123,7 @@ body {
   transition: background-color var(--dur) ease, color var(--dur) ease;
 }
 
-[data-theme="light"] body {
-  background-image: radial-gradient(rgba(2, 132, 199, 0.04) 1px, transparent 1px);
-}
+
 
 code, pre, .font-mono {
   font-family: 'JetBrains Mono', monospace;
@@ -3481,21 +3498,20 @@ select.input-field option {
 /* ── ENTERPRISE DSAR PORTAL UI ELEVATION & MODERN DESIGN SYSTEM ─────────────── */
 /* ══════════════════════════════════════════════════════════════════════════════ */
 
-/* Enterprise Glassmorphism Cards */
+/* Enterprise SaaS Cards */
 .db-card {
-  background: var(--bg-card, rgba(15, 23, 42, 0.85)) !important;
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.08)) !important;
-  border-radius: var(--radius-lg, 16px) !important;
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg, 12px) !important;
   padding: 24px 28px !important;
-  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.4) !important;
-  backdrop-filter: blur(14px) !important;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   position: relative;
 }
 
 .db-card:hover {
-  border-color: rgba(6, 182, 212, 0.3) !important;
-  box-shadow: 0 12px 40px -6px rgba(0, 0, 0, 0.5) !important;
+  border-color: var(--border-hover) !important;
+  box-shadow: var(--shadow-md) !important;
 }
 
 /* 7-Step Interactive Stepper Bar */
@@ -3506,12 +3522,11 @@ select.input-field option {
   gap: 8px !important;
   overflow-x: auto !important;
   padding: 14px 18px !important;
-  background: rgba(15, 23, 42, 0.65) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: var(--radius-lg, 16px) !important;
-  backdrop-filter: blur(16px) !important;
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg, 12px) !important;
   margin-bottom: 24px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
 .dsar-step-item {
@@ -3520,77 +3535,73 @@ select.input-field option {
   align-items: center !important;
   gap: 6px !important;
   min-width: 100px !important;
-  opacity: 0.55 !important;
+  opacity: 0.65 !important;
   cursor: pointer !important;
   padding: 8px 12px !important;
-  border-radius: var(--radius-md, 10px) !important;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  border-radius: var(--radius-md, 8px) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   user-select: none !important;
   border: 1px solid transparent !important;
 }
 
 .dsar-step-item:hover {
-  opacity: 0.95 !important;
-  background: rgba(255, 255, 255, 0.04) !important;
-  border-color: rgba(6, 182, 212, 0.2) !important;
-  transform: translateY(-2px) !important;
+  opacity: 1 !important;
+  background: var(--bg-elevated) !important;
+  border-color: var(--border-hover) !important;
+  transform: translateY(-1px) !important;
 }
 
 .dsar-step-item:active {
-  transform: scale(0.97) !important;
+  transform: scale(0.98) !important;
 }
 
 .dsar-step-item.active {
   opacity: 1 !important;
-  transform: translateY(-1px) !important;
 }
 
 .dsar-step-item.current-step {
   opacity: 1 !important;
-  background: rgba(6, 182, 212, 0.08) !important;
-  border: 1px solid rgba(6, 182, 212, 0.3) !important;
-  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.15) !important;
+  background: var(--primary-glow) !important;
+  border: 1px solid rgba(37, 99, 235, 0.3) !important;
 }
 
 .dsar-step-badge {
-  width: 34px !important;
-  height: 34px !important;
+  width: 32px !important;
+  height: 32px !important;
   border-radius: 50% !important;
-  background: var(--bg-surface, #0f172a) !important;
-  border: 2px solid var(--border, rgba(255, 255, 255, 0.12)) !important;
-  color: var(--text-muted, #94a3b8) !important;
+  background: var(--bg-elevated) !important;
+  border: 2px solid var(--border) !important;
+  color: var(--text-muted) !important;
   font-weight: 800 !important;
   font-size: 0.85rem !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  transition: all 0.22s ease !important;
+  transition: all 0.2s ease !important;
 }
 
 .dsar-step-item:hover .dsar-step-badge {
-  border-color: rgba(6, 182, 212, 0.6) !important;
-  color: var(--cyan, #38bdf8) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
 }
 
 .dsar-step-item.active .dsar-step-badge {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(37, 99, 235, 0.2)) !important;
-  border-color: var(--cyan, #38bdf8) !important;
-  color: var(--cyan, #38bdf8) !important;
-  box-shadow: 0 0 12px rgba(6, 182, 212, 0.35) !important;
+  background: rgba(37, 99, 235, 0.1) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
 }
 
 .dsar-step-item.current-step .dsar-step-badge {
-  background: linear-gradient(135deg, #06b6d4, #2563eb) !important;
-  border-color: #38bdf8 !important;
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
   color: #ffffff !important;
-  box-shadow: 0 0 18px rgba(6, 182, 212, 0.6) !important;
-  transform: scale(1.08) !important;
+  transform: scale(1.05) !important;
 }
 
 .dsar-step-label {
-  font-size: 0.74rem !important;
-  font-weight: 700 !important;
-  color: var(--text-muted, #94a3b8) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  color: var(--text-muted) !important;
   text-align: center !important;
   white-space: nowrap !important;
   letter-spacing: -0.01em !important;
@@ -3598,34 +3609,37 @@ select.input-field option {
 }
 
 .dsar-step-item.active .dsar-step-label {
-  color: var(--text-bright, #f8fafc) !important;
+  color: var(--text-bright) !important;
+  font-weight: 700 !important;
 }
 
 .dsar-step-item.current-step .dsar-step-label {
-  color: var(--cyan, #38bdf8) !important;
+  color: var(--primary) !important;
   font-weight: 800 !important;
 }
 
 .dsar-step-divider {
   flex: 1 !important;
   height: 2px !important;
-  background: var(--border, rgba(255, 255, 255, 0.1)) !important;
+  background: var(--border) !important;
   min-width: 16px !important;
   margin-top: -14px !important;
   transition: background 0.3s ease !important;
 }
 
 .dsar-step-item.active + .dsar-step-divider {
-  background: linear-gradient(90deg, var(--cyan, #38bdf8), var(--border, rgba(255, 255, 255, 0.1))) !important;
+  background: var(--primary) !important;
 }
 
 /* Polished Table Rows */
-.data-table tbody tr {
+.data-table tbody tr,
+.db-table tbody tr {
   transition: background-color 0.15s ease !important;
 }
 
-.data-table tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.03) !important;
+.data-table tbody tr:hover,
+.db-table tbody tr:hover {
+  background-color: var(--bg-elevated) !important;
 }
 
 /* Interactive Action Buttons */
@@ -3672,3 +3686,78 @@ select.input-field option {
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
+
+
+/* ── EXECUTIVE ENTERPRISE BUTTONS & INPUTS ───────────────────────────────── */
+.btn-primary {
+  background: var(--primary, #2563eb) !important;
+  color: #ffffff !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--radius-sm, 6px) !important;
+  font-weight: 600 !important;
+  padding: 8px 16px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover, #1d4ed8) !important;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2) !important;
+}
+
+.btn-ghost {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-secondary) !important;
+  border-radius: var(--radius-sm, 6px) !important;
+  font-weight: 600 !important;
+  padding: 8px 16px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-ghost:hover {
+  background: var(--bg-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-hover) !important;
+}
+
+.input-field {
+  background: var(--bg-input) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--radius-sm, 6px) !important;
+  outline: none !important;
+  transition: border-color var(--dur) ease, box-shadow var(--dur) ease !important;
+}
+
+.input-field:focus {
+  border-color: var(--border-focus) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Request table styling */
+.db-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.db-table th {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.db-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}

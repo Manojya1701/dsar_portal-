@@ -53,10 +53,11 @@ export function updateStepperActiveStep(stepNumber) {
 export async function goToPipelineStep(stepNumber, explicitRequestId = null) {
   const reqId = explicitRequestId || getActivePipelineRequestId();
   window.activePipelineRequestId = reqId;
+  window.activePipelineStep = stepNumber;
 
-  // Make sure internal dashboard view is visible and detail/assignment views are closed
+  // Unhide pipeline subview and close stacked views
   const dashInternal = document.getElementById('dsar-dashboard-internal-view');
-  const dashSubview = document.getElementById('dsar-subview-dashboard');
+  const pipelineSection = document.getElementById('dsar-subview-pipeline');
   const detailView = document.getElementById('dsar-ticket-detail-view');
   const assignView = document.getElementById('dsar-task-assignment-view');
   const subtaskView = document.getElementById('dsar-subtask-detail-view');
@@ -64,8 +65,8 @@ export async function goToPipelineStep(stepNumber, explicitRequestId = null) {
   if (detailView) detailView.classList.add('hidden');
   if (assignView) assignView.classList.add('hidden');
   if (subtaskView) subtaskView.classList.add('hidden');
-  if (dashInternal) dashInternal.classList.remove('hidden');
-  if (dashSubview) dashSubview.classList.remove('hidden');
+  if (dashInternal) dashInternal.classList.add('hidden');
+  if (pipelineSection) pipelineSection.classList.remove('hidden');
 
   updateStepperActiveStep(stepNumber);
 

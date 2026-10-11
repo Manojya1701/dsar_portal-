@@ -142,6 +142,7 @@ export function switchDsarSubView(viewKey) {
   const views = {
     dashboard: document.getElementById('dsar-subview-dashboard'),
     requests: document.getElementById('dsar-subview-dashboard'),
+    pipeline: document.getElementById('dsar-subview-pipeline'),
     email_request: document.getElementById('dsar-subview-email-request'),
     my_tasks: document.getElementById('dsar-subview-my-tasks'),
     team_tasks: document.getElementById('dsar-subview-team-tasks'),
@@ -152,17 +153,18 @@ export function switchDsarSubView(viewKey) {
     settings: document.getElementById('dsar-subview-settings')
   };
 
-  // Close overlay detail/assignment views and ensure internal dashboard view is visible
+  // Close overlay detail/assignment views
   const detailView = document.getElementById('dsar-ticket-detail-view');
   const assignView = document.getElementById('dsar-task-assignment-view');
   const subtaskView = document.getElementById('dsar-subtask-detail-view');
   const dashInternal = document.getElementById('dsar-dashboard-internal-view');
+  const pipelineSection = document.getElementById('dsar-subview-pipeline');
+
   if (detailView) detailView.classList.add('hidden');
   if (assignView) assignView.classList.add('hidden');
   if (subtaskView) subtaskView.classList.add('hidden');
-  if (dashInternal) dashInternal.classList.remove('hidden');
 
-  // Hide all subviews
+  // Hide all registered subviews
   Object.values(views).forEach(el => {
     if (el) el.classList.add('hidden');
   });
@@ -176,95 +178,82 @@ export function switchDsarSubView(viewKey) {
     }
   });
 
-  if (viewKey === 'dashboard' || viewKey === 'requests') {
-    if (views.dashboard) views.dashboard.classList.remove('hidden');
-    activeFilter = 'all';
-    renderDsarTable();
-    if (isQueueRequest) {
-      const qTable = document.getElementById('dsar-requests-table') || document.getElementById('dsar-dashboard-table-body');
-      if (qTable) qTable.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // Highlight active header nav link
+  document.querySelectorAll('.app-header__nav .nav-link').forEach(link => {
+    link.classList.remove('active');
+  });
+  const currentHeaderNav = document.getElementById(`nav-dsar-${viewKey}`);
+  if (currentHeaderNav) currentHeaderNav.classList.add('active');
+
+  if (viewKey === 'pipeline' || viewKey === 'intake' || viewKey === 'discovery' || viewKey === 'execution') {
+    if (dashInternal) dashInternal.classList.add('hidden');
+    if (pipelineSection) {
+      pipelineSection.classList.remove('hidden');
+      pipelineSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  } else if (viewKey === 'intake') {
-    if (views.dashboard) views.dashboard.classList.remove('hidden');
+    const stepToOpen = viewKey === 'intake' ? 1 : viewKey === 'discovery' ? 2 : viewKey === 'execution' ? 5 : (window.activePipelineStep || 1);
     if (typeof window.goToPipelineStep === 'function') {
-      window.goToPipelineStep(1);
-    } else {
-      const el = document.getElementById('dsar-step1-intake-card') || document.getElementById('dsar-deep-pipeline-section');
-      if (el) {
-        el.classList.remove('hidden');
-        el.style.display = 'block';
-        el.scrollIntoView({ behavior: 'smooth' });
+      window.goToPipelineStep(stepToOpen);
+    }
+  } else {
+    // Standard workspace views
+    if (dashInternal) dashInternal.classList.remove('hidden');
+    if (pipelineSection) pipelineSection.classList.add('hidden');
+
+    if (viewKey === 'dashboard' || viewKey === 'requests') {
+      if (views.dashboard) views.dashboard.classList.remove('hidden');
+      activeFilter = 'all';
+      renderDsarTable();
+      if (isQueueRequest) {
+        const qTable = document.getElementById('dsar-requests-table') || document.getElementById('dsar-dashboard-table-body');
+        if (qTable) qTable.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-    }
-  } else if (viewKey === 'discovery') {
-    if (views.dashboard) views.dashboard.classList.remove('hidden');
-    if (typeof window.goToPipelineStep === 'function') {
-      window.goToPipelineStep(2);
-    } else {
-      const el = document.getElementById('dsar-step2-discovery-card');
-      if (el) {
-        el.classList.remove('hidden');
-        el.style.display = 'block';
-        el.scrollIntoView({ behavior: 'smooth' });
+    } else if (viewKey === 'sla_breaches') {
+      if (views.dashboard) views.dashboard.classList.remove('hidden');
+      activeFilter = 'sla_breach';
+      renderDsarTable();
+    } else if (viewKey === 'email_request') {
+      if (views.email_request) {
+        views.email_request.classList.remove('hidden');
+        views.email_request.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    }
-  } else if (viewKey === 'execution') {
-    if (views.dashboard) views.dashboard.classList.remove('hidden');
-    if (typeof window.goToPipelineStep === 'function') {
-      window.goToPipelineStep(5);
-    } else {
-      const el = document.getElementById('dsar-step5-execution-card');
-      if (el) {
-        el.classList.remove('hidden');
-        el.style.display = 'block';
-        el.scrollIntoView({ behavior: 'smooth' });
+    } else if (viewKey === 'consent_hub') {
+      if (views.consent_hub) {
+        views.consent_hub.classList.remove('hidden');
+        views.consent_hub.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+      if (window.loadSubjectConsentStatus) window.loadSubjectConsentStatus();
+    } else if (viewKey === 'my_tasks') {
+      if (views.my_tasks) {
+        views.my_tasks.classList.remove('hidden');
+        views.my_tasks.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      renderMyTasks();
+    } else if (viewKey === 'team_tasks') {
+      if (views.team_tasks) {
+        views.team_tasks.classList.remove('hidden');
+        views.team_tasks.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      renderTeamTasks();
+    } else if (viewKey === 'reports') {
+      if (views.reports) {
+        views.reports.classList.remove('hidden');
+        views.reports.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      loadComplianceReports();
+    } else if (viewKey === 'team_config') {
+      if (views.team_config) {
+        views.team_config.classList.remove('hidden');
+        views.team_config.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (window.loadTeamsConfig) window.loadTeamsConfig();
+    } else if (viewKey === 'settings') {
+      if (views.settings) {
+        views.settings.classList.remove('hidden');
+        views.settings.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (window.loadPlatformSettings) window.loadPlatformSettings();
     }
-  } else if (viewKey === 'sla_breaches') {
-    if (views.dashboard) views.dashboard.classList.remove('hidden');
-    activeFilter = 'sla_breach';
-    renderDsarTable();
-  } else if (viewKey === 'email_request') {
-    if (views.email_request) {
-      views.email_request.classList.remove('hidden');
-      views.email_request.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  } else if (viewKey === 'consent_hub') {
-    if (views.consent_hub) {
-      views.consent_hub.classList.remove('hidden');
-      views.consent_hub.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    if (window.loadSubjectConsentStatus) window.loadSubjectConsentStatus();
-  } else if (viewKey === 'my_tasks') {
-    if (views.my_tasks) {
-      views.my_tasks.classList.remove('hidden');
-      views.my_tasks.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    renderMyTasks();
-  } else if (viewKey === 'team_tasks') {
-    if (views.team_tasks) {
-      views.team_tasks.classList.remove('hidden');
-      views.team_tasks.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    renderTeamTasks();
-  } else if (viewKey === 'reports') {
-    if (views.reports) {
-      views.reports.classList.remove('hidden');
-      views.reports.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    loadComplianceReports();
-  } else if (viewKey === 'team_config') {
-    if (views.team_config) {
-      views.team_config.classList.remove('hidden');
-      views.team_config.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    if (window.loadTeamsConfig) window.loadTeamsConfig();
-  } else if (viewKey === 'settings') {
-    if (views.settings) {
-      views.settings.classList.remove('hidden');
-      views.settings.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    if (window.loadPlatformSettings) window.loadPlatformSettings();
   }
 }
 
