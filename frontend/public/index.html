@@ -963,50 +963,75 @@
               
               <!-- ── COLUMN 1: Example: DSAR Request via Email ────────────── -->
               <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:18px 20px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:14px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                   <div style="display:flex; align-items:center; gap:8px;">
                     <span style="font-size:1.1rem;">✉️</span>
-                    <span style="font-size:0.92rem; font-weight:800; color:var(--text-bright);">Example: DSAR Request via Email</span>
+                    <span style="font-size:0.92rem; font-weight:800; color:var(--text-bright);">1. Customer Email Client</span>
                   </div>
-                  <div style="display:flex; gap:6px;">
-                    <button type="button" id="btn-email-quick-alex" style="font-size:0.68rem; font-weight:700; padding:3px 8px; border-radius:6px; background:rgba(37,99,235,0.12); color:#3b82f6; border:1px solid rgba(37,99,235,0.3); cursor:pointer;">Alex Carter (Access)</button>
-                    <button type="button" id="btn-email-quick-priya" style="font-size:0.68rem; font-weight:700; padding:3px 8px; border-radius:6px; background:rgba(16,185,129,0.12); color:#10b981; border:1px solid rgba(16,185,129,0.3); cursor:pointer;">Priya Nair (Erasure)</button>
+                  <!-- Quick Preset / Custom User Pills -->
+                  <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                    <button type="button" id="btn-email-quick-alex" style="font-size:0.68rem; font-weight:700; padding:3px 7px; border-radius:6px; background:rgba(37,99,235,0.12); color:#3b82f6; border:1px solid rgba(37,99,235,0.3); cursor:pointer;">Alex (Access)</button>
+                    <button type="button" id="btn-email-quick-priya" style="font-size:0.68rem; font-weight:700; padding:3px 7px; border-radius:6px; background:rgba(16,185,129,0.12); color:#10b981; border:1px solid rgba(16,185,129,0.3); cursor:pointer;">Priya (Erasure)</button>
+                    <button type="button" id="btn-email-quick-custom" style="font-size:0.68rem; font-weight:700; padding:3px 7px; border-radius:6px; background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.35); cursor:pointer;">+ Enter Custom User</button>
                   </div>
                 </div>
 
-                <!-- Inbound Mock Email Client Window -->
+                <!-- Customer Mail Client Composer Window -->
                 <div style="background:var(--bg-surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,0.05);">
                   <!-- Window Title Bar with 3 dots -->
-                  <div style="background:var(--bg-input); padding:8px 12px; display:flex; align-items:center; gap:6px; border-bottom:1px solid var(--border);">
-                    <span style="width:10px; height:10px; border-radius:50%; background:#ef4444; display:inline-block;"></span>
-                    <span style="width:10px; height:10px; border-radius:50%; background:#f59e0b; display:inline-block;"></span>
-                    <span style="width:10px; height:10px; border-radius:50%; background:#10b981; display:inline-block;"></span>
-                    <span style="font-size:0.68rem; color:var(--text-muted); margin-left:8px; font-weight:600;">Inbound Mailbox &bull; privacy@yourcompany.com</span>
+                  <div style="background:var(--bg-input); padding:8px 12px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border);">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <span style="width:10px; height:10px; border-radius:50%; background:#ef4444; display:inline-block;"></span>
+                      <span style="width:10px; height:10px; border-radius:50%; background:#f59e0b; display:inline-block;"></span>
+                      <span style="width:10px; height:10px; border-radius:50%; background:#10b981; display:inline-block;"></span>
+                      <span style="font-size:0.68rem; color:var(--text-muted); margin-left:8px; font-weight:600;">Customer Outgoing Mailbox</span>
+                    </div>
+                    <span style="font-size:0.66rem; color:#38bdf8; font-weight:700;">Manual Entry Enabled</span>
                   </div>
 
-                  <!-- Inbound Email Header Fields -->
-                  <div style="padding:12px 14px; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:6px; font-size:0.78rem;">
+                  <!-- Email Input Fields -->
+                  <div style="padding:12px 14px; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:8px; font-size:0.78rem;">
+                    
+                    <!-- Customer Name -->
                     <div style="display:flex; align-items:center;">
-                      <span style="width:60px; color:var(--text-muted); font-weight:600;">From:</span>
-                      <input type="text" id="email-inbound-from" value="Alex Carter &lt;alex.carter@example.com&gt;" style="flex:1; background:transparent; border:none; color:var(--text-bright); font-size:0.78rem; font-weight:600; outline:none;">
+                      <span style="width:75px; color:var(--text-muted); font-weight:600; font-size:0.75rem;">Your Name:</span>
+                      <input type="text" id="email-customer-name" value="Alex Carter" placeholder="e.g. Rahul Sharma" style="flex:1; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; padding:4px 8px; color:var(--text-bright); font-size:0.78rem; font-weight:600; outline:none;">
                     </div>
+
+                    <!-- Customer Email (Manual Entry) -->
                     <div style="display:flex; align-items:center;">
-                      <span style="width:60px; color:var(--text-muted); font-weight:600;">To:</span>
-                      <span style="color:var(--text-secondary); font-weight:600;">privacy@yourcompany.com</span>
+                      <span style="width:75px; color:var(--text-muted); font-weight:600; font-size:0.75rem;">Your Email:</span>
+                      <input type="email" id="email-customer-email" value="alex.carter@example.com" placeholder="e.g. rahul@example.com or any email" style="flex:1; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; padding:4px 8px; color:#38bdf8; font-size:0.78rem; font-weight:700; outline:none;">
                     </div>
+
+                    <!-- Target Portal Email -->
                     <div style="display:flex; align-items:center;">
-                      <span style="width:60px; color:var(--text-muted); font-weight:600;">Subject:</span>
-                      <input type="text" id="email-inbound-subject" value="Data Subject Access Request" style="flex:1; background:transparent; border:none; color:var(--text-bright); font-size:0.78rem; font-weight:700; outline:none;">
+                      <span style="width:75px; color:var(--text-muted); font-weight:600; font-size:0.75rem;">Send To:</span>
+                      <span style="padding:4px 8px; background:rgba(37,99,235,0.1); border-radius:6px; color:#60a5fa; font-weight:700; font-size:0.76rem;">privacy@yourcompany.com (Segmento Portal)</span>
                     </div>
+
+                    <!-- Intent Classification Dropdown -->
                     <div style="display:flex; align-items:center;">
-                      <span style="width:60px; color:var(--text-muted); font-weight:600;">Intent:</span>
-                      <input type="text" id="email-inbound-type" value="Access &amp; Export" style="flex:1; background:transparent; border:none; color:#3b82f6; font-size:0.75rem; font-weight:700; outline:none;">
+                      <span style="width:75px; color:var(--text-muted); font-weight:600; font-size:0.75rem;">Request Type:</span>
+                      <select id="email-customer-type" style="flex:1; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; padding:4px 8px; color:var(--text-bright); font-size:0.76rem; font-weight:600; outline:none;">
+                        <option value="Access &amp; Export" selected>Access &amp; Export (GDPR Art. 15 / DPDP Sec. 11)</option>
+                        <option value="Erasure &amp; Deletion">Erasure &amp; Deletion (GDPR Art. 17 / DPDP Sec. 12)</option>
+                        <option value="Consent Revocation">Consent Revocation (GDPR Art. 7(3))</option>
+                        <option value="Data Correction">Data Correction &amp; Rectification</option>
+                      </select>
+                    </div>
+
+                    <!-- Subject Field -->
+                    <div style="display:flex; align-items:center;">
+                      <span style="width:75px; color:var(--text-muted); font-weight:600; font-size:0.75rem;">Subject:</span>
+                      <input type="text" id="email-customer-subject" value="Data Subject Access Request (GDPR Art. 15)" style="flex:1; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; padding:4px 8px; color:var(--text-bright); font-size:0.78rem; font-weight:700; outline:none;">
                     </div>
                   </div>
 
                   <!-- Inbound Email Body -->
-                  <div style="padding:14px; font-size:0.78rem; line-height:1.55; color:var(--text-secondary);">
-                    <textarea id="email-inbound-body" rows="10" style="width:100%; background:transparent; border:none; color:var(--text-secondary); font-size:0.78rem; line-height:1.55; resize:none; outline:none; font-family:inherit;">Hi,
+                  <div style="padding:12px 14px;">
+                    <label style="display:block; font-size:0.72rem; color:var(--text-muted); font-weight:600; margin-bottom:4px;">Request Message Content:</label>
+                    <textarea id="email-customer-body" rows="6" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; padding:8px 10px; color:var(--text-secondary); font-size:0.78rem; line-height:1.5; resize:vertical; outline:none; font-family:inherit;">Hi,
 
 I would like to make a data subject access request under the applicable privacy law. Please provide all personal data you hold about me, including information on:
 
@@ -1015,35 +1040,52 @@ I would like to make a data subject access request under the applicable privacy 
 • Communication records
 • Any third-party data you may have
 
-Please let me know if you need any additional information from me.
-
-Regards,
-Alex Carter
-alex.carter@example.com</textarea>
+Please let me know if you need any additional information from me.</textarea>
                   </div>
 
-                  <!-- Inbound Email Attachment Pill -->
-                  <div style="padding:10px 14px; background:var(--bg-input); border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+                  <!-- Attachment Pill -->
+                  <div style="padding:8px 14px; background:var(--bg-input); border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
                     <div style="display:flex; align-items:center; gap:8px;">
-                      <div style="width:28px; height:28px; border-radius:6px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); display:flex; align-items:center; justify-content:center; color:#ef4444; font-size:0.9rem;">
+                      <div style="width:26px; height:26px; border-radius:6px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); display:flex; align-items:center; justify-content:center; color:#ef4444; font-size:0.85rem;">
                         📄
                       </div>
                       <div>
-                        <div style="font-size:0.75rem; font-weight:700; color:var(--text-bright);">Identity Document.pdf</div>
-                        <div style="font-size:0.65rem; color:var(--text-muted);">1.2 MB &bull; Government Issued ID</div>
+                        <div style="font-size:0.74rem; font-weight:700; color:var(--text-bright);">Identity Document.pdf</div>
+                        <div style="font-size:0.64rem; color:var(--text-muted);">1.2 MB &bull; Government Issued ID</div>
                       </div>
                     </div>
-                    <span style="font-size:0.65rem; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(16,185,129,0.15); color:#10b981;">Verified</span>
+                    <span style="font-size:0.65rem; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(16,185,129,0.15); color:#10b981;">Attached ✓</span>
                   </div>
                 </div>
 
-                <!-- Action Button: Ingest & Process Email -->
-                <button type="button" id="btn-email-flow-process" class="btn-primary" style="width:100%; padding:14px 18px; font-weight:800; font-size:0.92rem; display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg, #06b6d4 0%, #2563eb 100%); border-radius:10px; box-shadow:0 4px 14px rgba(6,182,212,0.35); border:none; cursor:pointer; color:#ffffff;">
-                  <span>⚡ Ingest &amp; Process Email Request with AI</span>
+                <!-- Step 1 Button: Send to Portal -->
+                <button type="button" id="btn-email-send-to-portal" class="btn-primary" style="width:100%; padding:11px 16px; font-weight:700; font-size:0.88rem; display:flex; align-items:center; justify-content:center; gap:8px; background:#2563eb; border-radius:8px; border:none; cursor:pointer; color:#ffffff; box-shadow:0 2px 8px rgba(37,99,235,0.3);">
+                  <span>📤 Step 1: Send Email to Portal (privacy@yourcompany.com)</span>
                 </button>
 
+                <!-- Portal Mailbox Arrival Banner (Dynamic Receiver) -->
+                <div id="email-portal-mailbox-banner" class="hidden" style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.3); border-radius:8px; padding:10px 12px; transition:all 0.3s ease;">
+                  <!-- Dynamic content injected by dsar-email-flow.js -->
+                </div>
+
+                <!-- Step 2 Button: Ingest & Process Email with AI -->
+                <button type="button" id="btn-email-flow-process" class="btn-primary" style="width:100%; padding:13px 18px; font-weight:800; font-size:0.92rem; display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg, #06b6d4 0%, #2563eb 100%); border-radius:10px; box-shadow:0 4px 14px rgba(6,182,212,0.35); border:none; cursor:pointer; color:#ffffff;">
+                  <span>⚡ Step 2: Ingest &amp; Process Inbound Email with AI</span>
+                </button>
+
+                <!-- Inbound Mailbox History Drawer -->
+                <div style="border-top:1px solid var(--border); padding-top:10px; display:flex; flex-direction:column; gap:6px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.72rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Portal Inbound Mailbox</span>
+                    <span id="email-inbox-count-badge" style="font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:10px; background:rgba(56,189,248,0.15); color:#38bdf8;">Loading Mailbox...</span>
+                  </div>
+                  <div id="email-inbound-history-list" style="display:flex; flex-direction:column; gap:5px; max-height:120px; overflow-y:auto;">
+                    <!-- Dynamically populated -->
+                  </div>
+                </div>
+
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <span style="font-size:0.7rem; color:var(--text-muted);">Triggers NLP Extraction &amp; Discovery</span>
+                  <span style="font-size:0.7rem; color:var(--text-muted);">Triggers NLP &bull; Discovery &bull; Kafka &bull; Dispatch</span>
                   <button type="button" id="btn-email-flow-reset" style="background:none; border:none; color:var(--text-muted); font-size:0.72rem; cursor:pointer; text-decoration:underline;">Reset Stepper</button>
                 </div>
               </div>

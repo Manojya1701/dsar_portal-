@@ -33,25 +33,88 @@ router.post('/dsar/analyze-intent', async (req, res) => {
   }
 });
 
-// POST /api/dsar/process-email-request — End-to-End Automated Processing of Customer Email Request
-router.post('/dsar/process-email-request', async (req, res) => {
+// In-memory store for Inbound Email Requests received at privacy@yourcompany.com
+const INBOUND_EMAILS = [
+  {
+    id: 'INB-2026-0001',
+    fromName: 'Alex Carter',
+    fromEmail: 'alex.carter@example.com',
+    toEmail: 'privacy@yourcompany.com',
+    subject: 'Data Subject Access Request (GDPR Art. 15)',
+    requestType: 'Access & Export',
+    body: 'Hi,\n\nI would like to make a data subject access request under the applicable privacy law. Please provide all personal data you hold about me, including information on:\n\n• My profile details\n• Purchase history\n• Communication records\n• Any third-party data you may have\n\nPlease let me know if you need any additional information from me.\n\nRegards,\nAlex Carter\nalex.carter@example.com',
+    attachment: 'Identity Document.pdf (1.2 MB)',
+    receivedAt: new Date(Date.now() - 3600000).toISOString(),
+    status: 'READY'
+  },
+  {
+    id: 'INB-2026-0002',
+    fromName: 'Priya Nair',
+    fromEmail: 'priya.nair@example.in',
+    toEmail: 'privacy@yourcompany.com',
+    subject: 'Right to Erasure Notice (DPDP Act 2023 Sec. 12)',
+    requestType: 'Erasure & Deletion',
+    body: 'To the Data Protection Officer,\n\nI am exercising my statutory Right to Erasure under the Digital Personal Data Protection Act 2023. Kindly delete all my personal data, browsing telemetry, and communication records from your systems.\n\nThank you,\nPriya Nair\npriya.nair@example.in',
+    attachment: 'Passport_Copy.pdf (2.4 MB)',
+    receivedAt: new Date(Date.now() - 7200000).toISOString(),
+    status: 'READY'
+  }
+];
+
+// GET /api/dsar/inbound-emails - List all emails received in privacy portal mailbox
+router.get(['/dsar/inbound-emails', '/api/dsar/inbound-emails'], (req, res) => {
+  return res.json({ success: true, count: INBOUND_EMAILS.length, emails: INBOUND_EMAILS });
+});
+
+// POST /api/dsar/inbound-emails/send - Customer manually sends an email to portal mailbox
+router.post(['/dsar/inbound-emails/send', '/api/dsar/inbound-emails/send'], (req, res) => {
   try {
-    const result = await dsarService.processCustomerEmailRequest(req.body || {});
-    if (!result.success) {
-      return jsonError(res, 400, result.message);
+    const { fromEmail, fromName, subject, body, requestType, attachment } = req.body || {};
+    if (!fromEmail || !fromEmail.includes('@')) {
+      return jsonError(res, 400, 'A valid sender email address is required.');
     }
-    return res.status(200).json(result);
+
+    const newInbound = {
+      id: `INB-${Date.now().toString().slice(-6)}`,
+      fromName: (fromName || fromEmail.split('@')[0]).trim(),
+      fromEmail: fromEmail.trim().toLowerCase(),
+      toEmail: 'privacy@yourcompany.com',
+      subject: subject || 'Data Subject Privacy Request',
+      requestType: requestType || 'Erasure & Deletion',
+      body: body || 'I am requesting processing of my personal data under applicable data privacy laws.',
+      attachment: attachment || 'Identity_Verification.pdf (1.1 MB)',
+      receivedAt: new Date().toISOString(),
+      status: 'RECEIVED'
+    };
+
+    INBOUND_EMAILS.unshift(newInbound);
+    return res.status(201).json({
+      success: true,
+      message: `Email from ${newInbound.fromEmail} successfully received at portal mailbox privacy@yourcompany.com`,
+      mail: newInbound
+    });
   } catch (err) {
     return jsonError(res, 500, err.message);
   }
 });
 
-router.post('/api/dsar/process-email-request', async (req, res) => {
+// POST /api/dsar/process-email-request — End-to-End Automated Processing of Customer Email Request
+router.post(['/dsar/process-email-request', '/api/dsar/process-email-request'], async (req, res) => {
   try {
     const result = await dsarService.processCustomerEmailRequest(req.body || {});
     if (!result.success) {
       return jsonError(res, 400, result.message);
     }
+
+    // Update status in INBOUND_EMAILS if present
+    const reqEmail = (req.body?.email || '').trim().toLowerCase();
+    const inbound = INBOUND_EMAILS.find(m => m.fromEmail === reqEmail);
+    if (inbound) {
+      inbound.status = 'PROCESSED';
+      inbound.requestId = result.requestId;
+      inbound.certificateId = result.certificateId;
+    }
+
     return res.status(200).json(result);
   } catch (err) {
     return jsonError(res, 500, err.message);

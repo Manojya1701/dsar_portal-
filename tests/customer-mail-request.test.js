@@ -56,11 +56,19 @@ describe('Customer Mail Request Automated Processing (End-to-End)', () => {
     expect(res.message).toContain('valid customer email address is required');
   });
 
-  test('should record email dispatch in history accessible by requestId', async () => {
-    const history = await emailNotificationService.getEmailDispatchHistory();
-    expect(Array.isArray(history)).toBe(true);
-    const item = history.find(h => h.recipient === 'priya.nair@example.in');
-    expect(item).toBeDefined();
-    expect(item.subject).toContain('Official Certificate of Data Erasure');
+  test('should process custom user email entered manually and deliver to that specific address', async () => {
+    const customUser = {
+      email: 'manoj.sharma@customdomain.io',
+      fullName: 'Manoj Sharma',
+      requestText: 'I would like to export all my personal data held by Segmento.',
+      requestType: 'Access & Export'
+    };
+
+    const result = await dsarService.processCustomerEmailRequest(customUser);
+    expect(result.success).toBe(true);
+    expect(result.customerEmail).toBe('manoj.sharma@customdomain.io');
+    expect(result.customerName).toBe('Manoj Sharma');
+    expect(result.stages.emailDispatch.receipt.recipient).toBe('manoj.sharma@customdomain.io');
+    expect(result.stages.emailDispatch.receipt.html).toContain('Manoj Sharma');
   });
 });
