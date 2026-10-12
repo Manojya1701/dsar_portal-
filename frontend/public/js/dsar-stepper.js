@@ -157,6 +157,71 @@ export async function goToPipelineStep(stepNumber, explicitRequestId = null) {
   }
 }
 
+
+/**
+ * Auto-execute the complete 7-stage pipeline sequentially with live visual progress.
+ */
+export async function runEntirePipelineAuto(explicitRequestId = null) {
+  const reqId = explicitRequestId || getActivePipelineRequestId();
+  window.activePipelineRequestId = reqId;
+
+  const btn = document.getElementById('btn-auto-run-pipeline');
+  const originalHtml = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+  }
+
+  try {
+    const toast = (msg, t = 'info') => {
+      if (window.showToastMessage) window.showToastMessage(msg, t);
+      else console.log(msg);
+    };
+
+    toast(`🚀 Starting Automated 7-Stage DSAR Privacy Pipeline for ${reqId}…`, 'info');
+
+    // Step 2: Identity Discovery
+    if (btn) btn.innerHTML = '<span>⚡ Running Step 2: Identity Discovery…</span>';
+    await goToPipelineStep(2, reqId);
+    await new Promise(r => setTimeout(r, 900));
+
+    // Step 3: Impact Analysis
+    if (btn) btn.innerHTML = '<span>⚡ Running Step 3: Impact Analysis…</span>';
+    await goToPipelineStep(3, reqId);
+    await new Promise(r => setTimeout(r, 900));
+
+    // Step 4: Policy Check
+    if (btn) btn.innerHTML = '<span>⚡ Running Step 4: Policy Check…</span>';
+    await goToPipelineStep(4, reqId);
+    await new Promise(r => setTimeout(r, 900));
+
+    // Step 5: Deletion Execution
+    if (btn) btn.innerHTML = '<span>⚡ Running Step 5: Deletion Execution…</span>';
+    await goToPipelineStep(5, reqId);
+    await new Promise(r => setTimeout(r, 1100));
+
+    // Step 6: Verification
+    if (btn) btn.innerHTML = '<span>⚡ Running Step 6: Post-Deletion Verification…</span>';
+    await goToPipelineStep(6, reqId);
+    await new Promise(r => setTimeout(r, 900));
+
+    // Step 7: Certificate of Erasure
+    if (btn) btn.innerHTML = '<span>⚡ Running Step 7: Minting Certificate…</span>';
+    await goToPipelineStep(7, reqId);
+
+    toast(`🎉 All 7 Stages Completed Successfully for ${reqId}! Official Certificate Issued.`, 'success');
+  } catch (err) {
+    console.error('[Pipeline Auto-Run Error]', err);
+    if (window.showToastMessage) window.showToastMessage(`Pipeline execution error: ${err.message}`, 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.innerHTML = originalHtml;
+    }
+  }
+}
+
 export function initDsarStepper() {
   const stepItems = document.querySelectorAll('.dsar-step-item');
   stepItems.forEach(item => {
@@ -180,7 +245,17 @@ export function initDsarStepper() {
     });
   });
 
+
+  const autoRunBtn = document.getElementById('btn-auto-run-pipeline');
+  if (autoRunBtn) {
+    autoRunBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      runEntirePipelineAuto();
+    });
+  }
+
   // Global hooks
+  window.runEntirePipelineAuto = runEntirePipelineAuto;
   window.updateStepperActiveStep = updateStepperActiveStep;
   window.goToPipelineStep = goToPipelineStep;
   window.getActivePipelineRequestId = getActivePipelineRequestId;

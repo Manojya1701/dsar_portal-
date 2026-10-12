@@ -715,16 +715,23 @@ export function initDsarDashboard() {
     }
   });
 
-  // Click on 'Open Pipeline' -> Scroll smoothly to Step 2 Identity Discovery
+  // Click on 'Open Pipeline' -> Unhide and navigate directly to Step 2 Identity Discovery
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.btn-open-dsar-flow');
     if (btn) {
+      e.preventDefault();
       const requestId = btn.dataset.id;
       if (requestId) {
-        if (window.runIdentityDiscoveryScan) {
+        if (typeof window.goToPipelineStep === 'function') {
+          window.goToPipelineStep(2, requestId);
+        } else if (typeof window.switchDsarSubview === 'function') {
+          window.activePipelineRequestId = requestId;
+          window.switchDsarSubview('pipeline');
+          if (typeof window.goToPipelineStep === 'function') {
+            window.goToPipelineStep(2, requestId);
+          }
+        } else if (window.runIdentityDiscoveryScan) {
           window.runIdentityDiscoveryScan(requestId);
-        } else if (window.triggerDsarDiscovery) {
-          window.triggerDsarDiscovery(requestId);
         }
       }
     }

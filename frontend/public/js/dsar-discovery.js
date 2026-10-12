@@ -198,7 +198,9 @@ export function initDsarDiscovery() {
       e.preventDefault();
       const reqIdTag = document.getElementById('dsar-discovery-req-id');
       const reqId = reqIdTag ? reqIdTag.textContent.replace('Target: ', '').trim() : activeTargetRequestId;
-      if (window.runImpactAnalysisScan && reqId) {
+      if (typeof window.goToPipelineStep === 'function') {
+        window.goToPipelineStep(3, reqId);
+      } else if (window.runImpactAnalysisScan && reqId) {
         window.runImpactAnalysisScan(reqId);
       } else {
         const impactBtn = document.getElementById('btn-retrigger-impact');

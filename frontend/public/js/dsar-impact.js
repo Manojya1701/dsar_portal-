@@ -202,7 +202,9 @@ export function initDsarImpact() {
       e.preventDefault();
       const reqIdTag = document.getElementById('dsar-impact-req-id');
       const reqId = reqIdTag ? reqIdTag.textContent.replace('Target: ', '').trim() : activeImpactRequestId;
-      if (window.runLegalPolicyEvaluation && reqId) {
+      if (typeof window.goToPipelineStep === 'function') {
+        window.goToPipelineStep(4, reqId);
+      } else if (window.runLegalPolicyEvaluation && reqId) {
         window.runLegalPolicyEvaluation(reqId);
       } else {
         const policyBtn = document.getElementById('btn-retrigger-policy');
@@ -210,4 +212,8 @@ export function initDsarImpact() {
       }
     });
   }
+
+  // Expose global handlers on window
+  window.runImpactAnalysisScan = runImpactAnalysisScan;
+  window.triggerDsarImpact = runImpactAnalysisScan;
 }

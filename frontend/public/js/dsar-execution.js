@@ -259,14 +259,13 @@ export function initDsarExecution() {
   if (proceedStep6Btn) {
     proceedStep6Btn.addEventListener('click', (e) => {
       e.preventDefault();
-      if (activeExecutionRequestId) {
-        if (typeof window.runDsarVerification === 'function') {
-          window.runDsarVerification(activeExecutionRequestId);
-        } else {
-          showToast(`Step 6 Verification ready for ${activeExecutionRequestId}`, 'info');
-        }
+      const targetId = activeExecutionRequestId || window.activePipelineRequestId || 'DSAR-2026-000101';
+      if (typeof window.goToPipelineStep === 'function') {
+        window.goToPipelineStep(6, targetId);
+      } else if (typeof window.runDsarVerification === 'function') {
+        window.runDsarVerification(targetId);
       } else {
-        showToast('Please execute Step 5 deletion first.', 'info');
+        showToast(`Step 6 Verification ready for ${targetId}`, 'info');
       }
     });
   }

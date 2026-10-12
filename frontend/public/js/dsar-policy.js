@@ -263,7 +263,9 @@ export function initDsarPolicy() {
       e.preventDefault();
       const reqIdTag = document.getElementById('dsar-policy-req-id');
       const reqId = reqIdTag ? reqIdTag.textContent.replace('Target: ', '').trim() : activePolicyRequestId;
-      if (window.runDsarExecution && reqId) {
+      if (typeof window.goToPipelineStep === 'function') {
+        window.goToPipelineStep(5, reqId);
+      } else if (window.runDsarExecution && reqId) {
         window.runDsarExecution(reqId);
       } else {
         const execBtn = document.getElementById('btn-retrigger-execution');

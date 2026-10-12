@@ -189,8 +189,10 @@ export function initDsarVerification() {
   if (proceedStep7Btn) {
     proceedStep7Btn.addEventListener('click', (e) => {
       e.preventDefault();
-      const targetId = activeVerificationRequestId || 'DSAR-2026-000101';
-      if (window.generateDsarCertificate) {
+      const targetId = activeVerificationRequestId || window.activePipelineRequestId || 'DSAR-2026-000101';
+      if (typeof window.goToPipelineStep === 'function') {
+        window.goToPipelineStep(7, targetId);
+      } else if (window.generateDsarCertificate) {
         window.generateDsarCertificate(targetId);
       } else {
         showToast(`Proceeding to Step 7 for ${targetId}…`, 'info');
