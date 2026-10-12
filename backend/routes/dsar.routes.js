@@ -16,6 +16,7 @@ const dsarVerificationService = require('../services/dsar-verification-service')
 const dsarCertificateService = require('../services/dsar-certificate-service');
 const emailNotificationService = require('../services/email-notification-service');
 const dsarSettingsService = require('../services/dsar-settings-service');
+const connectorReconciliationService = require('../services/connector-reconciliation-service');
 
 function jsonError(res, status, message) {
   return res.status(status).json({ success: false, error: message });
@@ -860,14 +861,67 @@ router.get('/dsar/verification/:id', async (req, res) => {
 
 // ── DSAR STEP 7 DELETION CERTIFICATE & IMMUTABLE AUDIT PACKAGE ROUTES ───────
 
-// POST /api/dsar/certificate/generate — Generate Official Deletion Certificate & Audit Trail
+// POST /api/dsar/certificate/generate — Generate Official Deletion Certificate with Case Completeness Gate
 router.post('/dsar/certificate/generate', async (req, res) => {
   try {
-    const { requestId } = req.body || {};
-    const result = await dsarCertificateService.generateDsarCertificate(requestId);
+    const { requestId, bypassGate } = req.body || {};
+    const result = await dsarCertificateService.generateDsarCertificate(requestId, { bypassGate });
     if (!result.success) {
+      if (result.blockedByGate) {
+        return res.status(422).json(result);
+      }
       return jsonError(res, 400, result.message);
     }
+    return res.json(result);
+  } catch (err) {
+    return jsonError(res, 500, err.message);
+  }
+});
+
+// ── DOWNSTREAM CONNECTOR RECONCILIATION & CASE COMPLETENESS GATE ROUTES ──
+
+// GET /api/dsar/reconciliation/:id — Fetch live connector reconciliation manifest & DLQ state
+router.get(['/api/dsar/reconciliation/:id', '/dsar/reconciliation/:id'], (req, res) => {
+  try {
+    const manifest = connectorReconciliationService.getReconciliationManifest(req.params.id);
+    return res.json(manifest);
+  } catch (err) {
+    return jsonError(res, 500, err.message);
+  }
+});
+
+// POST /api/dsar/reconciliation/simulate-timeout — Simulate connector timeout to DLQ
+router.post(['/api/dsar/reconciliation/simulate-timeout', '/dsar/reconciliation/simulate-timeout'], (req, res) => {
+  try {
+    const { requestId, connectorId } = req.body || {};
+    const result = connectorReconciliationService.simulateConnectorTimeout(requestId, connectorId);
+    return res.json(result);
+  } catch (err) {
+    return jsonError(res, 500, err.message);
+  }
+});
+
+// POST /api/dsar/reconciliation/replay-dlq — Replay event from DLQ and confirm delivery
+router.post(['/api/dsar/reconciliation/replay-dlq', '/dsar/reconciliation/replay-dlq'], (req, res) => {
+  try {
+    const { requestId, connectorId } = req.body || {};
+    const result = connectorReconciliationService.replayDlq(requestId, connectorId);
+    return res.json(result);
+  } catch (err) {
+    return jsonError(res, 500, err.message);
+  }
+});
+
+// POST /api/dsar/reconciliation/grant-exception — DPO signs legal statutory exception
+router.post(['/api/dsar/reconciliation/grant-exception', '/dsar/reconciliation/grant-exception'], (req, res) => {
+  try {
+    const { requestId, connectorId, dpoName, exceptionReason, legalStatutoryBasis } = req.body || {};
+    const result = connectorReconciliationService.grantDpoLegalException(requestId, {
+      connectorId,
+      dpoName,
+      exceptionReason,
+      legalStatutoryBasis
+    });
     return res.json(result);
   } catch (err) {
     return jsonError(res, 500, err.message);

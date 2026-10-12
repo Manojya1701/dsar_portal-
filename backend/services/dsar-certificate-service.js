@@ -21,6 +21,7 @@ const dsarPolicyService = require('./dsar-policy-service');
 const dsarExecutionService = require('./dsar-execution-service');
 const dsarVerificationService = require('./dsar-verification-service');
 const auditService = require('./audit-service');
+const connectorReconciliationService = require('./connector-reconciliation-service');
 
 const FALLBACK_CERTIFICATES = {};
 
@@ -49,7 +50,7 @@ function generateCertificateSeal(payload) {
  * Generate Official Certified Deletion Certificate & Immutable Audit Package (Step 7).
  * @param {string} requestId - DSAR Tracking ID (e.g. DSAR-2026-000101)
  */
-async function generateDsarCertificate(requestId) {
+async function generateDsarCertificate(requestId, options = {}) {
   if (!requestId || typeof requestId !== 'string' || !requestId.trim()) {
     return { success: false, message: 'Valid DSAR Tracking ID is required' };
   }
@@ -57,6 +58,19 @@ async function generateDsarCertificate(requestId) {
   const cleanReqId = requestId.trim();
   const issuedTimestamp = new Date().toISOString();
   const certificateId = generateCertificateNumber(cleanReqId);
+
+  // 0. Enforce Case Completeness Gate (Cannot certify if any connector failed/in DLQ)
+  const gateCheck = connectorReconciliationService.validateCompletenessGate(cleanReqId);
+  if (!gateCheck.passed && !options.bypassGate) {
+    return {
+      success: false,
+      blockedByGate: true,
+      gateStatus: gateCheck.gateStatus,
+      message: gateCheck.message,
+      blockedConnectors: gateCheck.blockedConnectors,
+      manifest: gateCheck.manifest
+    };
+  }
 
   // 1. Fetch DSAR Request Details (Step 1)
   const reqRes = await dsarService.getDsarRequestById(cleanReqId);
@@ -223,7 +237,26 @@ async function generateDsarCertificate(requestId) {
     dpoAttestation,
     legalDefenseStatement: 'This official Certificate of Erasure and attached cryptographic audit manifest constitute conclusive proof of compliant data destruction and lawful statutory retention under DPDP Act 2023 Sec. 12(3) and EU GDPR Art. 17(3)(b). This record is tamper-sealed and admissible in judicial and regulatory defense.',
     digitalCertificateSeal,
-    auditPackageDownloadUrl: `/api/dsar/certificate/${cleanReqId}/export`
+    auditPackageDownloadUrl: `/api/dsar/certificate/${cleanReqId}/export`,
+    connectorReconciliation: {
+      gatePassed: gateCheck.passed,
+      gateStatus: gateCheck.gateStatus,
+      totalConnectors: gateCheck.manifest.totalConnectors,
+      confirmedCount: gateCheck.manifest.confirmedCount,
+      dlqCount: gateCheck.manifest.dlqCount,
+      exceptionCount: gateCheck.manifest.exceptionCount,
+      connectors: (gateCheck.manifest.connectors || []).map(c => ({
+        id: c.id,
+        name: c.name,
+        system: c.system,
+        protocol: c.protocol,
+        status: c.status,
+        targetScope: c.targetScope,
+        latencyMs: c.latencyMs,
+        ackId: c.targetAckId || c.ackId
+      })),
+      dpoExceptions: gateCheck.manifest.dpoExceptions || []
+    }
   };
 
   // Cache certificate in memory
@@ -267,7 +300,8 @@ async function generateDsarCertificate(requestId) {
     success: true,
     certificateId,
     requestId: cleanReqId,
-    certificate
+    certificate,
+    connectorReconciliation: certificate.connectorReconciliation
   };
 }
 

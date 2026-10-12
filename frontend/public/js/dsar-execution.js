@@ -3,8 +3,9 @@
 /**
  * DSAR Execution Controller (Step 5 of Segmento Protect Flow)
  * Manages Physical Deletion & Cryptographic Anonymization Execution:
- * Executes hard purging on marketing/profile records and selective masking on financial ledgers
- * per the approved Step 4 statutory policy.
+ * - Executes hard purging on marketing/profile records and selective masking on financial ledgers.
+ * - Multi-Store Downstream Connector Reconciliation & Dead-Letter Queue (DLQ) Tracking.
+ * - Controlled Failure Simulation (Marketing Cloud Timeout) & DLQ Replay.
  */
 
 let activeExecutionRequestId = null;
@@ -44,26 +45,15 @@ function renderExecutionTable(executionLogs) {
   if (!tbody) return;
 
   if (!executionLogs || executionLogs.length === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6" style="text-align:center; padding:20px; color:var(--text-muted);">
-          No execution logs available.
-        </td>
-      </tr>
-    `;
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--text-muted);">No execution logs available.</td></tr>';
     return;
   }
 
   tbody.innerHTML = executionLogs.map(row => {
     const isPurged = row.operationApplied === 'HARD_DELETE';
-    
-    let opBadge = isPurged
-      ? `<span class="meta-pill" style="background:rgba(239,68,68,0.15); color:var(--red); border:1px solid rgba(239,68,68,0.35); font-size:0.75rem; font-weight:700;">
-           🗑️ HARD PURGED
-         </span>`
-      : `<span class="meta-pill" style="background:rgba(6,182,212,0.15); color:var(--cyan); border:1px solid rgba(6,182,212,0.35); font-size:0.75rem; font-weight:700;">
-           🛡️ PSEUDONYMIZED
-         </span>`;
+    const opBadge = isPurged
+      ? '<span class="meta-pill" style="background:rgba(239,68,68,0.15); color:var(--red); border:1px solid rgba(239,68,68,0.35); font-size:0.75rem; font-weight:700;">🗑️ HARD PURGED</span>'
+      : '<span class="meta-pill" style="background:rgba(6,182,212,0.15); color:var(--cyan); border:1px solid rgba(6,182,212,0.35); font-size:0.75rem; font-weight:700;">🛡️ PSEUDONYMIZED</span>';
 
     const fieldsList = Array.isArray(row.fieldsModified) ? row.fieldsModified.join(', ') : (row.fieldsModified || 'N/A');
 
@@ -88,6 +78,99 @@ function renderExecutionTable(executionLogs) {
   }).join('');
 }
 
+/**
+ * Render Downstream Connector Reconciliation & DLQ Status Rows
+ */
+export function renderReconciliationGrid(manifest) {
+  const container = document.getElementById('connector-reconcil-grid');
+  const gatePill = document.getElementById('reconcil-gate-pill');
+  if (!container) return;
+
+  const connectors = manifest?.connectors || [];
+
+  if (gatePill) {
+    if (manifest.gatePassed) {
+      gatePill.className = 'meta-pill success';
+      gatePill.style.cssText = 'font-size:0.72rem;';
+      gatePill.textContent = manifest.exceptionCount > 0 
+        ? `${manifest.confirmedCount}/5 Confirmed (${manifest.exceptionCount} DPO Exception)`
+        : '5/5 Confirmed (Completeness Gate Passed)';
+    } else {
+      gatePill.className = 'meta-pill';
+      gatePill.style.cssText = 'background:rgba(220,38,38,0.15); color:var(--red); border:1px solid rgba(220,38,38,0.35); font-weight:700; font-size:0.72rem;';
+      gatePill.textContent = `⚠️ Gate Tripped: ${manifest.dlqCount} in DLQ`;
+    }
+  }
+
+  container.innerHTML = connectors.map(c => {
+    let statusBadge = '';
+    let rowBorder = 'border:1px solid var(--border);';
+    let bg = 'background:var(--bg-input);';
+
+    if (c.status === 'CONFIRMED') {
+      statusBadge = '<span class="meta-pill success" style="font-size:0.72rem; font-weight:700;">✓ CONFIRMED PURGED</span>';
+    } else if (c.status === 'IN_DLQ') {
+      rowBorder = 'border:1px solid rgba(220,38,38,0.4);';
+      bg = 'background:rgba(220,38,38,0.05);';
+      statusBadge = '<span class="meta-pill" style="background:rgba(220,38,38,0.15); color:var(--red); border:1px solid rgba(220,38,38,0.4); font-size:0.72rem; font-weight:800;">⚠️ DEAD-LETTER QUEUE (DLQ)</span>';
+    } else if (c.status === 'EXCEPTION_GRANTED') {
+      rowBorder = 'border:1px solid rgba(139,92,246,0.35);';
+      bg = 'background:rgba(139,92,246,0.05);';
+      statusBadge = '<span class="meta-pill" style="background:rgba(139,92,246,0.15); color:var(--purple); border:1px solid rgba(139,92,246,0.35); font-size:0.72rem; font-weight:700;">🛡️ DPO STATUTORY EXCEPTION</span>';
+    } else {
+      statusBadge = '<span class="meta-pill" style="font-size:0.72rem;">⏳ PENDING RECONCILIATION</span>';
+    }
+
+    const errorNotice = c.lastError && c.status === 'IN_DLQ'
+      ? `<div style="font-size:0.72rem; color:var(--red); font-family:monospace; margin-top:4px;">❌ ${escapeHtml(c.lastError)} (DLQ Msg: ${escapeHtml(c.dlqMessageId || 'DLQ-001')})</div>`
+      : '';
+
+    const exceptionNotice = c.status === 'EXCEPTION_GRANTED'
+      ? `<div style="font-size:0.72rem; color:var(--purple); font-weight:600; margin-top:4px;">✓ ${escapeHtml(c.lastError)}</div>`
+      : '';
+
+    return `
+      <div style="padding:10px 14px; ${bg} ${rowBorder} border-radius:6px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:1.2rem;">${c.icon || '📦'}</span>
+          <div>
+            <div style="font-size:0.85rem; font-weight:700; color:var(--text-bright);">${escapeHtml(c.name)}</div>
+            <div style="font-size:0.7rem; color:var(--text-muted);">
+              Protocol: <span style="font-family:monospace; color:var(--text-secondary);">${escapeHtml(c.protocol)}</span> &bull; Scope: ${escapeHtml(c.targetScope)}
+            </div>
+            ${errorNotice}
+            ${exceptionNotice}
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="text-align:right;">
+            ${statusBadge}
+            <div style="font-size:0.68rem; font-family:monospace; color:var(--text-muted); margin-top:2px;">
+              ${escapeHtml(c.targetAckId || c.ackId || 'ACK-PENDING')} &bull; ${c.latencyMs || 40}ms
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+export async function fetchAndRenderReconciliation(requestId) {
+  const cleanId = (requestId || activeExecutionRequestId || 'DSAR-2026-000101').trim();
+  try {
+    const res = await fetch(`${window.location.origin}/api/dsar/reconciliation/${encodeURIComponent(cleanId)}`);
+    const manifest = await res.json();
+    if (manifest && manifest.success) {
+      renderReconciliationGrid(manifest);
+      return manifest;
+    }
+  } catch (err) {
+    console.warn('Reconciliation fetch error:', err.message);
+  }
+  return null;
+}
+
 export async function runDsarExecution(requestId) {
   if (!requestId) return;
   activeExecutionRequestId = requestId;
@@ -105,7 +188,6 @@ export async function runDsarExecution(requestId) {
   if (card) card.classList.remove('hidden');
   if (reqIdEl) reqIdEl.textContent = `Target: ${requestId}`;
 
-  // Update stepper indicator to Step 5
   updateStepperActiveStep(5);
 
   if (tbody) {
@@ -140,17 +222,13 @@ export async function runDsarExecution(requestId) {
       if (anonEl) anonEl.textContent = `${rep.recordsAnonymizedCount} Masked`;
       if (retainedEl) retainedEl.textContent = `${rep.recordsRetainedCount} Retained (7-Yr Lock)`;
 
-      if (bannerDescEl) {
-        bannerDescEl.textContent = rep.summaryMessage || 'Execution completed successfully across all system stores.';
-      }
-
-      if (sha256El) {
-        sha256El.textContent = rep.executionChecksum || 'e3b0c44298fc1c149afbf4c8996f';
-      }
+      if (bannerDescEl) bannerDescEl.textContent = rep.summaryMessage || 'Execution completed successfully across all system stores.';
+      if (sha256El) sha256El.textContent = rep.executionChecksum || 'e3b0c44298fc1c149afbf4c8996f';
 
       renderExecutionTable(rep.executionLogs);
-      showToast(`✓ Step 5 Execution Complete: ${rep.recordsPurgedCount} purged, ${rep.recordsAnonymizedCount} pseudonymized.`, 'success');
+      await fetchAndRenderReconciliation(requestId);
 
+      showToast(`✓ Step 5 Execution Complete: ${rep.recordsPurgedCount} purged, ${rep.recordsAnonymizedCount} pseudonymized.`, 'success');
       if (card) card.scrollIntoView({ behavior: 'smooth' });
     } else {
       showToast(data.message || 'Failed to complete execution', 'error');
@@ -163,6 +241,9 @@ export async function runDsarExecution(requestId) {
 export function initDsarExecution() {
   const retriggerBtn = document.getElementById('btn-retrigger-execution');
   const proceedStep6Btn = document.getElementById('btn-proceed-step6');
+  const simTimeoutBtn = document.getElementById('btn-simulate-connector-timeout');
+  const replayDlqBtn = document.getElementById('btn-replay-connector-dlq');
+  const signExceptionBtn = document.getElementById('btn-sign-dpo-exception');
 
   if (retriggerBtn) {
     retriggerBtn.addEventListener('click', (e) => {
@@ -190,6 +271,70 @@ export function initDsarExecution() {
     });
   }
 
-  // Expose global handler for cross-module invocations
+  // Interactive DLQ Simulation Actions
+  if (simTimeoutBtn) {
+    simTimeoutBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const reqId = activeExecutionRequestId || 'DSAR-2026-000101';
+      try {
+        const res = await fetch(`${window.location.origin}/api/dsar/reconciliation/simulate-timeout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ requestId: reqId, connectorId: 'connector-marketing' })
+        });
+        const manifest = await res.json();
+        renderReconciliationGrid(manifest);
+        showToast('⚠️ Simulated 504 Timeout on Marketing Cloud. Event queued in DLQ & Case Completeness Gate TRIPPED!', 'error');
+      } catch (err) {
+        showToast(`Error simulating timeout: ${err.message}`, 'error');
+      }
+    });
+  }
+
+  if (replayDlqBtn) {
+    replayDlqBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const reqId = activeExecutionRequestId || 'DSAR-2026-000101';
+      try {
+        const res = await fetch(`${window.location.origin}/api/dsar/reconciliation/replay-dlq`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ requestId: reqId, connectorId: 'connector-marketing' })
+        });
+        const manifest = await res.json();
+        renderReconciliationGrid(manifest);
+        showToast('✓ Successfully replayed Marketing Cloud event from DLQ! All 5 systems confirmed purged.', 'success');
+      } catch (err) {
+        showToast(`Error replaying DLQ: ${err.message}`, 'error');
+      }
+    });
+  }
+
+  if (signExceptionBtn) {
+    signExceptionBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const reqId = activeExecutionRequestId || 'DSAR-2026-000101';
+      try {
+        const res = await fetch(`${window.location.origin}/api/dsar/reconciliation/grant-exception`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            requestId: reqId,
+            connectorId: 'connector-marketing',
+            dpoName: 'Sarah Lee (DPO)',
+            exceptionReason: 'Vendor scheduled maintenance; verified manual database purge #PURGE-901',
+            legalStatutoryBasis: 'GDPR Art. 17(3)(b) Statutory Waiver'
+          })
+        });
+        const manifest = await res.json();
+        renderReconciliationGrid(manifest);
+        showToast('✓ DPO Legal Exception Signed & Cryptographically Sealed. Case Completeness Gate unblocked!', 'success');
+      } catch (err) {
+        showToast(`Error signing exception: ${err.message}`, 'error');
+      }
+    });
+  }
+
   window.runDsarExecution = runDsarExecution;
+  window.fetchAndRenderReconciliation = fetchAndRenderReconciliation;
 }

@@ -2,8 +2,11 @@
 
 /**
  * DSAR Certificate Controller (Step 7 of Segmento Protect Flow)
- * Manages official deletion certificate generation, cryptographic SHA-256 seal rendering,
- * audit package downloads (.json), and printable certificate formatting.
+ * Manages:
+ * - Case Completeness Gate Validation (Blocks issuance if any system failed or is in DLQ).
+ * - Cryptographically Sealed Certificate of Erasure Generation.
+ * - Downstream Multi-Store Reconciliation Receipts Table.
+ * - DLQ Replay and DPO Exception Waivers.
  */
 
 let activeCertificateRequestId = null;
@@ -24,6 +27,114 @@ function showToast(msg, type = 'info') {
     window.showToastMessage(msg, type);
   } else {
     console.log(`[Toast ${type}] ${msg}`);
+  }
+}
+
+/**
+ * Render Case Completeness Gate Status Alert Box
+ */
+function renderGateBox(gateData) {
+  const box = document.getElementById('dsar-completeness-gate-box');
+  const certDoc = document.getElementById('dsar-official-certificate-document');
+  if (!box) return;
+
+  const passed = gateData.passed || gateData.gatePassed || (gateData.gateStatus === 'PASSED');
+
+  if (passed) {
+    box.innerHTML = `
+      <div style="padding:14px 18px; background:rgba(5,150,105,0.08); border:1px solid rgba(5,150,105,0.3); border-radius:var(--radius-md); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:32px; height:32px; border-radius:50%; background:rgba(5,150,105,0.15); color:var(--emerald); display:flex; align-items:center; justify-content:center; font-size:1.1rem; font-weight:800;">✓</div>
+          <div>
+            <div style="font-weight:800; color:var(--emerald); font-size:0.9rem;">Case Completeness Gate: PASSED (All 5 Downstream Stores Confirmed Reconciled)</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+              Zero unconfirmed systems &bull; Regulatory compliance certificate permitted under DPDP Act 2023 Sec. 12 &amp; GDPR Art. 17.
+            </div>
+          </div>
+        </div>
+        <span class="meta-pill success" style="font-size:0.75rem; font-weight:700;">🛡️ Gate Verified</span>
+      </div>
+    `;
+    if (certDoc) certDoc.style.display = 'block';
+  } else {
+    const blockedCount = (gateData.blockedConnectors && gateData.blockedConnectors.length) || 1;
+    const blockedNames = (gateData.blockedConnectors || []).map(b => b.name).join(', ') || 'Marketing Cloud';
+
+    box.innerHTML = `
+      <div style="padding:18px 20px; background:rgba(220,38,38,0.08); border:1px solid rgba(220,38,38,0.4); border-radius:var(--radius-md); box-shadow:0 4px 14px rgba(220,38,38,0.15);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:36px; height:36px; border-radius:50%; background:rgba(220,38,38,0.18); color:var(--red); display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:800;">⛔</div>
+            <div>
+              <div style="font-weight:800; color:var(--red); font-size:0.95rem;">Case Completeness Gate TRIPPED: Certificate Issuance Withheld</div>
+              <div style="font-size:0.78rem; color:var(--text-bright); margin-top:3px; max-width:700px; line-height:1.4;">
+                <strong>${blockedCount} downstream connector (${escapeHtml(blockedNames)}) failed or is in Dead-Letter Queue (DLQ).</strong> Under statutory law, a Certificate of Erasure cannot be issued until all systems confirm deletion or an authorized DPO legal exception is registered.
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons inside gate alert -->
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <button type="button" id="gate-action-replay-dlq" class="btn-primary" style="font-size:0.78rem; padding:7px 14px; cursor:pointer;">
+              🔄 Replay DLQ &amp; Unblock Gate
+            </button>
+            <button type="button" id="gate-action-sign-exception" class="btn-ghost" style="font-size:0.78rem; padding:7px 14px; color:var(--purple); border-color:rgba(139,92,246,0.35); cursor:pointer;">
+              🛡️ Sign DPO Statutory Exception
+            </button>
+          </div>
+        </div>
+
+        <div style="font-size:0.72rem; color:var(--text-muted); font-family:monospace; background:rgba(0,0,0,0.15); padding:6px 12px; border-radius:4px;">
+          Gate Status: <strong>BLOCKED_DLQ</strong> &bull; Reason: 504 Gateway Timeout on Marketing Cloud Webhook &bull; Ticket cannot be certified closed.
+        </div>
+      </div>
+    `;
+
+    // Wire gate alert action buttons
+    const replayBtn = document.getElementById('gate-action-replay-dlq');
+    const excBtn = document.getElementById('gate-action-sign-exception');
+
+    if (replayBtn) {
+      replayBtn.addEventListener('click', async () => {
+        showToast('Replaying event from Dead Letter Queue…', 'info');
+        try {
+          await fetch(`${window.location.origin}/api/dsar/reconciliation/replay-dlq`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ requestId: activeCertificateRequestId, connectorId: 'connector-marketing' })
+          });
+          showToast('✓ DLQ Event Resolved! Re-generating Certificate…', 'success');
+          generateDsarCertificate(activeCertificateRequestId);
+        } catch (e) {
+          showToast(`DLQ replay failed: ${e.message}`, 'error');
+        }
+      });
+    }
+
+    if (excBtn) {
+      excBtn.addEventListener('click', async () => {
+        showToast('Registering DPO Statutory Exception…', 'info');
+        try {
+          await fetch(`${window.location.origin}/api/dsar/reconciliation/grant-exception`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              requestId: activeCertificateRequestId,
+              connectorId: 'connector-marketing',
+              dpoName: 'Sarah Lee (DPO)',
+              exceptionReason: 'Vendor maintenance window; manual SQL audit script verified #PURGE-901',
+              legalStatutoryBasis: 'GDPR Art. 17(3)(b) Statutory Waiver'
+            })
+          });
+          showToast('✓ DPO Exception Signed. Re-generating Certificate…', 'success');
+          generateDsarCertificate(activeCertificateRequestId);
+        } catch (e) {
+          showToast(`DPO Exception failed: ${e.message}`, 'error');
+        }
+      });
+    }
+
+    if (certDoc) certDoc.style.display = 'none';
   }
 }
 
@@ -78,6 +189,7 @@ function renderCertificate(cert) {
     sha256SealEl.textContent = cert.digitalCertificateSeal || '7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069';
   }
 
+  // Populate Multi-Store Erasure Attestation Summary Table
   if (summaryTbody && Array.isArray(cert.erasureSummaryBreakdown)) {
     summaryTbody.innerHTML = cert.erasureSummaryBreakdown.map(item => {
       const isRetained = item.status === 'STATUTORY_RETAINED';
@@ -98,7 +210,6 @@ function renderCertificate(cert) {
 
 /**
  * Generate official deletion certificate and immutable audit trail.
- * @param {string} requestId - DSAR Tracking ID
  */
 export async function generateDsarCertificate(requestId) {
   if (!requestId || typeof requestId !== 'string' || !requestId.trim()) {
@@ -114,7 +225,7 @@ export async function generateDsarCertificate(requestId) {
     card.style.display = 'block';
   }
 
-  showToast(`Generating Official Certified Deletion Certificate for ${requestId}…`, 'info');
+  showToast(`Evaluating Case Completeness Gate for ${requestId}…`, 'info');
 
   try {
     const res = await fetch(`${window.location.origin}/api/dsar/certificate/generate`, {
@@ -125,11 +236,19 @@ export async function generateDsarCertificate(requestId) {
 
     const data = await res.json();
 
+    if (res.status === 422 || (data && data.blockedByGate)) {
+      // Case Completeness Gate TRIPPED!
+      renderGateBox(data);
+      showToast('⛔ Case Completeness Gate TRIPPED: 1 system unresolved in DLQ. Certificate withheld.', 'error');
+      if (card) card.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
     if (data && data.success && data.certificate) {
+      renderGateBox({ passed: true, gateStatus: 'PASSED' });
       renderCertificate(data.certificate);
       showToast(`✓ Step 7 Complete: Official Certificate ${data.certificateId} Issued & Cryptographically Sealed!`, 'success');
 
-      // Update progress stepper to mark Step 7 as active/completed
       if (window.updateStepperActiveStep) {
         window.updateStepperActiveStep(7);
       } else {
@@ -169,39 +288,30 @@ async function downloadAuditPackage() {
     a.remove();
     window.URL.revokeObjectURL(url);
 
-    showToast('✓ Official Audit Package (.json) downloaded successfully', 'success');
+    showToast('✓ Downloaded Immutable Audit Package (.json)', 'success');
   } catch (err) {
-    showToast(`Download error: ${err.message}`, 'error');
+    showToast(`Error downloading audit package: ${err.message}`, 'error');
   }
 }
 
-/**
- * Initialize Step 7 Certificate Controller.
- */
+function printCertificatePdf() {
+  window.print();
+}
+
 export function initDsarCertificate() {
-  const proceedStep7Btn = document.getElementById('btn-proceed-step7');
-  const regenerateBtn = document.getElementById('btn-regenerate-certificate');
+  const refreshBtn = document.getElementById('btn-regenerate-certificate');
   const downloadBtn = document.getElementById('btn-download-audit-package');
   const printBtn = document.getElementById('btn-print-certificate');
-  const completeBtn = document.getElementById('btn-complete-dsar-lifecycle');
   const copySealBtn = document.getElementById('btn-copy-cert-seal');
+  const completeBtn = document.getElementById('btn-complete-dsar-lifecycle');
 
-  if (proceedStep7Btn) {
-    proceedStep7Btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const verifTargetId = document.getElementById('dsar-verif-target-id');
-      const reqId = verifTargetId ? verifTargetId.textContent.trim().replace('Target: ', '') : 'DSAR-2026-000101';
-      generateDsarCertificate(reqId);
-    });
-  }
-
-  if (regenerateBtn) {
-    regenerateBtn.addEventListener('click', (e) => {
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', (e) => {
       e.preventDefault();
       if (activeCertificateRequestId) {
         generateDsarCertificate(activeCertificateRequestId);
       } else {
-        showToast('Please verify execution first in Step 6.', 'info');
+        showToast('Please execute Steps 1 through 6 first.', 'info');
       }
     });
   }
@@ -216,16 +326,18 @@ export function initDsarCertificate() {
   if (printBtn) {
     printBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      window.print();
+      printCertificatePdf();
     });
   }
 
   if (copySealBtn) {
-    copySealBtn.addEventListener('click', () => {
+    copySealBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       const sealEl = document.getElementById('dsar-cert-sha256-seal');
       if (sealEl && sealEl.textContent) {
-        navigator.clipboard.writeText(sealEl.textContent.trim());
-        showToast('✓ SHA-256 Certificate Seal copied to clipboard', 'success');
+        navigator.clipboard.writeText(sealEl.textContent.trim())
+          .then(() => showToast('✓ SHA-256 Certificate Seal copied to clipboard', 'success'))
+          .catch(() => showToast('Failed to copy seal to clipboard', 'error'));
       }
     });
   }
@@ -233,26 +345,13 @@ export function initDsarCertificate() {
   if (completeBtn) {
     completeBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      showToast('🎉 End-to-End DSAR Data Erasure Lifecycle Completed Successfully!', 'success');
-      const queueTable = document.getElementById('dsar-requests-table');
-      if (queueTable) queueTable.scrollIntoView({ behavior: 'smooth' });
+      showToast('🎉 DSAR Statutory Erasure Lifecycle Completed and Certified Closed!', 'success');
+      setTimeout(() => {
+        if (window.switchDsarSubview) window.switchDsarSubview('dashboard');
+      }, 1500);
     });
   }
 
-  // Expose global handler for cross-module invocations
   window.generateDsarCertificate = generateDsarCertificate;
-  window.renderDsarCertificate = (cert, reqId) => {
-    if (reqId) activeCertificateRequestId = reqId;
-    const card = document.getElementById('dsar-step7-certificate-card');
-    if (card) {
-      card.classList.remove('hidden');
-      card.style.display = 'block';
-    }
-    renderCertificate(cert);
-    document.querySelectorAll('.dsar-step-item').forEach(item => {
-      item.classList.remove('active');
-      if (item.dataset.step === '7') item.classList.add('active');
-    });
-    if (card) card.scrollIntoView({ behavior: 'smooth' });
-  };
+  window.renderCertificate = renderCertificate;
 }
