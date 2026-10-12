@@ -350,14 +350,15 @@ export function initDsarDetail() {
 
   const triggerPipeline = (e) => {
     if (e) e.preventDefault();
-    if (currentDetailRequestId) {
-      const targetReqId = currentDetailRequestId;
-      closeDsarDetailView();
-      if (window.runIdentityDiscoveryScan) {
-        window.runIdentityDiscoveryScan(targetReqId);
-      } else if (window.triggerDsarDiscovery) {
-        window.triggerDsarDiscovery(targetReqId);
-      }
+    const targetReqId = currentDetailRequestId || window.activePipelineRequestId || 'DSAR-2026-000101';
+    closeDsarDetailView();
+    if (typeof window.goToPipelineStep === 'function') {
+      window.goToPipelineStep(2, targetReqId);
+    } else if (typeof window.switchDsarSubview === 'function') {
+      window.activePipelineRequestId = targetReqId;
+      window.switchDsarSubview('pipeline');
+    } else if (window.runIdentityDiscoveryScan) {
+      window.runIdentityDiscoveryScan(targetReqId);
     }
   };
 

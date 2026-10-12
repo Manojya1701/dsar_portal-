@@ -58,6 +58,7 @@ export async function goToPipelineStep(stepNumber, explicitRequestId = null) {
   // Unhide pipeline subview and close stacked views
   const dashInternal = document.getElementById('dsar-dashboard-internal-view');
   const pipelineSection = document.getElementById('dsar-subview-pipeline');
+  const deepPipeline = document.getElementById('dsar-deep-pipeline-section');
   const detailView = document.getElementById('dsar-ticket-detail-view');
   const assignView = document.getElementById('dsar-task-assignment-view');
   const subtaskView = document.getElementById('dsar-subtask-detail-view');
@@ -66,7 +67,15 @@ export async function goToPipelineStep(stepNumber, explicitRequestId = null) {
   if (assignView) assignView.classList.add('hidden');
   if (subtaskView) subtaskView.classList.add('hidden');
   if (dashInternal) dashInternal.classList.add('hidden');
-  if (pipelineSection) pipelineSection.classList.remove('hidden');
+
+  if (pipelineSection) {
+    pipelineSection.classList.remove('hidden');
+    pipelineSection.style.display = 'block';
+  }
+  if (deepPipeline) {
+    deepPipeline.classList.remove('hidden');
+    deepPipeline.style.display = 'block';
+  }
 
   updateStepperActiveStep(stepNumber);
 
@@ -76,7 +85,7 @@ export async function goToPipelineStep(stepNumber, explicitRequestId = null) {
       if (card) {
         card.classList.remove('hidden');
         card.style.display = 'block';
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
         const txt = document.getElementById('intake-request-text');
         if (txt) setTimeout(() => txt.focus(), 300);
       }
@@ -87,11 +96,11 @@ export async function goToPipelineStep(stepNumber, explicitRequestId = null) {
       if (card) {
         card.classList.remove('hidden');
         card.style.display = 'block';
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
       }
       if (typeof window.runIdentityDiscoveryScan === 'function') {
         window.runIdentityDiscoveryScan(reqId);
       }
-      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
       break;
     }
     case 3: {
@@ -99,11 +108,11 @@ export async function goToPipelineStep(stepNumber, explicitRequestId = null) {
       if (card) {
         card.classList.remove('hidden');
         card.style.display = 'block';
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
       }
       if (typeof window.runImpactAnalysisScan === 'function') {
         window.runImpactAnalysisScan(reqId);
       }
-      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
       break;
     }
     case 4: {
@@ -111,11 +120,11 @@ export async function goToPipelineStep(stepNumber, explicitRequestId = null) {
       if (card) {
         card.classList.remove('hidden');
         card.style.display = 'block';
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
       }
       if (typeof window.runLegalPolicyEvaluation === 'function') {
         window.runLegalPolicyEvaluation(reqId);
       }
-      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
       break;
     }
     case 5: {
@@ -123,11 +132,11 @@ export async function goToPipelineStep(stepNumber, explicitRequestId = null) {
       if (card) {
         card.classList.remove('hidden');
         card.style.display = 'block';
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
       }
       if (typeof window.runDsarExecution === 'function') {
         window.runDsarExecution(reqId);
       }
-      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
       break;
     }
     case 6: {
@@ -135,11 +144,11 @@ export async function goToPipelineStep(stepNumber, explicitRequestId = null) {
       if (card) {
         card.classList.remove('hidden');
         card.style.display = 'block';
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
       }
       if (typeof window.runDsarVerification === 'function') {
         window.runDsarVerification(reqId);
       }
-      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
       break;
     }
     case 7: {
@@ -147,16 +156,15 @@ export async function goToPipelineStep(stepNumber, explicitRequestId = null) {
       if (card) {
         card.classList.remove('hidden');
         card.style.display = 'block';
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
       }
       if (typeof window.generateDsarCertificate === 'function') {
         window.generateDsarCertificate(reqId);
       }
-      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
       break;
     }
   }
 }
-
 
 /**
  * Auto-execute the complete 7-stage pipeline sequentially with live visual progress.
