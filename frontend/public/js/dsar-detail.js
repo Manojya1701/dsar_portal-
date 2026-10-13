@@ -106,6 +106,10 @@ export function switchDetailTab(tabKey) {
   if (panelMap[tabKey]) {
     panelMap[tabKey].classList.remove('hidden');
   }
+
+  if (tabKey === 'auditlog' && currentDetailRequestId) {
+    loadCaseTimeline(currentDetailRequestId);
+  }
 }
 
 /**
@@ -223,6 +227,122 @@ function renderAuditLogList(logs) {
 }
 
 /**
+ * Render Case Timeline Hash Chain & Milestones Ledger (Tab 7 - P1)
+ */
+export function renderCaseTimelineLedger(data) {
+  const container = document.getElementById('detail-case-timeline-container');
+  const chainStatusEl = document.getElementById('timeline-chain-status');
+  const blocksCountEl = document.getElementById('timeline-blocks-count');
+  const headHashEl = document.getElementById('timeline-head-hash');
+
+  if (chainStatusEl) {
+    if (data.chainIntegrity?.valid) {
+      chainStatusEl.innerHTML = '<span style="color:var(--emerald);">✓ 100% Cryptographically Intact</span>';
+    } else {
+      chainStatusEl.innerHTML = '<span style="color:var(--red);">⚠️ Chain Integrity Compromised</span>';
+    }
+  }
+
+  if (blocksCountEl) {
+    blocksCountEl.textContent = `${data.chainIntegrity?.totalBlocks || data.timeline?.length || 0} / 11 Blocks`;
+  }
+
+  if (headHashEl) {
+    headHashEl.textContent = data.chainIntegrity?.headHash || '-';
+    headHashEl.title = data.chainIntegrity?.headHash || '';
+  }
+
+  if (!container) return;
+
+  if (!data.timeline || data.timeline.length === 0) {
+    container.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem; padding:16px; text-align:center;">No timeline milestones registered yet.</div>';
+    return;
+  }
+
+  container.innerHTML = data.timeline.map((entry, idx) => {
+    const isLast = idx === data.timeline.length - 1;
+
+    let stageColor = 'var(--cyan)';
+    let stageIcon = '🔹';
+    if (entry.stage === 'INTAKE') { stageColor = 'var(--blue)'; stageIcon = '📥'; }
+    else if (entry.stage === 'KYC_VERIFICATION') { stageColor = 'var(--emerald)'; stageIcon = '🪪'; }
+    else if (entry.stage === 'DISCOVERY') { stageColor = 'var(--cyan)'; stageIcon = '🔍'; }
+    else if (entry.stage === 'IMPACT_ANALYSIS') { stageColor = '#a78bfa'; stageIcon = '⚡'; }
+    else if (entry.stage === 'POLICY_EVALUATION') { stageColor = 'var(--amber)'; stageIcon = '⚖️'; }
+    else if (entry.stage === 'DRYRUN_SIMULATION') { stageColor = 'var(--cyan)'; stageIcon = '🧪'; }
+    else if (entry.stage === 'DPO_APPROVAL') { stageColor = 'var(--emerald)'; stageIcon = '✍️'; }
+    else if (entry.stage === 'EXECUTION') { stageColor = 'var(--red)'; stageIcon = '⚙️'; }
+    else if (entry.stage === 'CONNECTOR_RECONCILIATION') { stageColor = 'var(--blue)'; stageIcon = '🔄'; }
+    else if (entry.stage === 'VERIFICATION') { stageColor = 'var(--emerald)'; stageIcon = '🛡️'; }
+    else if (entry.stage === 'CERTIFICATE') { stageColor = '#f59e0b'; stageIcon = '📜'; }
+
+    return `
+      <div style="display:flex; gap:16px; position:relative; padding-bottom:${isLast ? '0' : '18px'};">
+        ${!isLast ? '<div style="position:absolute; left:19px; top:36px; bottom:0; width:2px; background:rgba(255,255,255,0.08);"></div>' : ''}
+        
+        <div style="width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.04); border:2px solid ${stageColor}; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; z-index:1;">
+          ${stageIcon}
+        </div>
+
+        <div style="flex:1; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; padding:12px 16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:6px;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <span class="meta-pill" style="background:rgba(255,255,255,0.06); font-size:0.7rem; font-weight:700;">#${entry.sequence}</span>
+              <span class="meta-pill" style="background:rgba(6,182,212,0.1); color:${stageColor}; border:1px solid ${stageColor}44; font-size:0.72rem; font-weight:800;">
+                ${escapeHtml(entry.stage)}
+              </span>
+              <span style="font-size:0.85rem; font-weight:700; color:var(--text-bright);">${escapeHtml(entry.stageLabel)}</span>
+            </div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">
+              ${new Date(entry.timestamp).toLocaleString()}
+            </div>
+          </div>
+
+          <p style="font-size:0.8rem; color:var(--text-secondary); margin:4px 0 8px 0; line-height:1.4;">
+            ${escapeHtml(entry.action)}
+          </p>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:0.72rem; color:var(--text-muted); padding-top:6px; border-top:1px solid rgba(255,255,255,0.05);">
+            <div>
+              Actor: <strong style="color:var(--text-bright);">${escapeHtml(entry.actor)}</strong>
+              ${entry.statutoryReference ? ` • <span style="color:var(--amber); font-weight:600;">${escapeHtml(entry.statutoryReference)}</span>` : ''}
+            </div>
+            <div style="font-family:monospace; font-size:0.68rem; color:var(--cyan); background:rgba(6,182,212,0.08); padding:3px 8px; border-radius:4px;">
+              prev: ${escapeHtml((entry.prevHash || '').substring(0, 8))}… ➔ seal: <strong style="color:var(--text-bright);">${escapeHtml((entry.entryHash || '').substring(0, 12))}…</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/**
+ * Load Case Timeline from Backend (GET /api/dsar/timeline/:id)
+ */
+export async function loadCaseTimeline(requestId) {
+  if (!requestId) return;
+  try {
+    const res = await fetch(`${window.location.origin}/api/dsar/timeline/${encodeURIComponent(requestId)}`);
+    const data = await res.json();
+    if (data && data.success) {
+      renderCaseTimelineLedger(data);
+    }
+  } catch (err) {
+    console.error('[Load Case Timeline Error]', err);
+  }
+}
+
+/**
+ * Export Certified Regulatory Evidence Dossier (GET /api/dsar/timeline/:id/export)
+ */
+export function exportEvidenceDossier(requestId) {
+  if (!requestId) return;
+  showToast(`Exporting certified regulatory compliance evidence dossier for ${requestId}…`, 'info');
+  window.location.href = `${window.location.origin}/api/dsar/timeline/${encodeURIComponent(requestId)}/export`;
+}
+
+/**
  * Open and Populate Screen 3: DSAR Detail View for a Request ID
  */
 export async function openDsarDetailView(requestId) {
@@ -277,8 +397,9 @@ export async function openDsarDetailView(requestId) {
       // 4. Communications (Tab 6)
       renderCommunicationsList(data.communications);
 
-      // 5. Audit Log (Tab 7)
+      // 5. Audit Log (Tab 7) & Case Timeline (P1)
       renderAuditLogList(data.auditLog);
+      loadCaseTimeline(data.requestId);
 
       // Hide Dashboard & Show Screen 3 Detail View
       if (dashboardView) dashboardView.classList.add('hidden');
@@ -451,7 +572,19 @@ export function initDsarDetail() {
     }
   });
 
-  // Expose global helper
+  // Export Evidence Dossier (Tab 7 - P1)
+  const btnExportDossier = document.getElementById('btn-download-evidence-dossier');
+  if (btnExportDossier) {
+    btnExportDossier.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetReqId = currentDetailRequestId || (window.activePipelineRequestId || 'DSAR-2026-000101');
+      exportEvidenceDossier(targetReqId);
+    });
+  }
+
+  // Expose global helpers
   window.openDsarDetailView = openDsarDetailView;
   window.closeDsarDetailView = closeDsarDetailView;
+  window.loadCaseTimeline = loadCaseTimeline;
+  window.exportEvidenceDossier = exportEvidenceDossier;
 }

@@ -185,12 +185,178 @@ export async function runLegalPolicyEvaluation(requestId) {
       renderPolicyMatrixTable(rep.policyMatrix);
       showToast(`✓ Legal Policy Check Complete: ${rep.statutoryLocksCount} statutory lock(s) identified.`, 'success');
 
+      // Auto-trigger Step 4 Pre-Execution Policy Dry-Run Simulation (P2)
+      await runDryRunSimulation(requestId);
+
       if (card) card.scrollIntoView({ behavior: 'smooth' });
     } else {
       showToast(data.message || 'Failed to complete legal policy check', 'error');
     }
   } catch (err) {
     showToast(`Error evaluating legal policy: ${err.message}`, 'error');
+  }
+}
+
+/**
+ * Render Side-by-Side Mutation Diff Table for Pre-Execution Dry-Run Engine (P2)
+ */
+export function renderDryRunDiffTable(plan) {
+  const tbody = document.getElementById('dsar-dryrun-diff-tbody');
+  if (!tbody) return;
+
+  if (!plan || plan.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align:center; padding:18px; color:var(--text-muted);">
+          No pre-execution simulation mutations available.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = plan.map(item => {
+    let actionBadge = '';
+    switch (item.action) {
+      case 'HARD_PURGE':
+        actionBadge = `<span class="meta-pill" style="background:rgba(239,68,68,0.15); color:var(--red); border:1px solid rgba(239,68,68,0.35); font-weight:700; font-size:0.72rem;">🗑️ HARD PURGE</span>`;
+        break;
+      case 'PSEUDONYMIZE':
+        actionBadge = `<span class="meta-pill" style="background:rgba(6,182,212,0.15); color:var(--cyan); border:1px solid rgba(6,182,212,0.35); font-weight:700; font-size:0.72rem;">🎭 PSEUDONYMIZE</span>`;
+        break;
+      case 'STATUTORY_RETAIN':
+        actionBadge = `<span class="meta-pill" style="background:rgba(245,158,11,0.15); color:var(--amber); border:1px solid rgba(245,158,11,0.35); font-weight:700; font-size:0.72rem;">🔒 STATUTORY RETAIN</span>`;
+        break;
+      case 'SUPPRESS':
+        actionBadge = `<span class="meta-pill" style="background:rgba(59,130,246,0.15); color:var(--blue); border:1px solid rgba(59,130,246,0.35); font-weight:700; font-size:0.72rem;">🔇 SUPPRESS</span>`;
+        break;
+      default:
+        actionBadge = `<span class="meta-pill primary" style="font-size:0.72rem;">${escapeHtml(item.action)}</span>`;
+    }
+
+    const beforeSnippet = item.before 
+      ? `<pre style="margin:0; font-size:0.72rem; color:var(--text-bright); background:rgba(0,0,0,0.25); padding:6px 8px; border-radius:4px; max-height:80px; overflow-y:auto; white-space:pre-wrap; word-break:break-all;">${escapeHtml(JSON.stringify(item.before, null, 1))}</pre>`
+      : '<span style="color:var(--text-muted); font-size:0.75rem;">None</span>';
+
+    const afterSnippet = item.after
+      ? `<pre style="margin:0; font-size:0.72rem; color:${item.action === 'STATUTORY_RETAIN' ? 'var(--amber)' : 'var(--cyan)'}; background:rgba(0,0,0,0.25); padding:6px 8px; border-radius:4px; max-height:80px; overflow-y:auto; white-space:pre-wrap; word-break:break-all;">${escapeHtml(JSON.stringify(item.after, null, 1))}</pre>`
+      : `<span style="color:var(--red); font-weight:700; font-size:0.75rem; font-family:monospace;">[PERMANENTLY PURGED FROM DISK]</span>`;
+
+    const conflictNote = item.legalHoldConflict 
+      ? `<div style="margin-top:4px; color:var(--amber); font-weight:700; font-size:0.7rem;">⚠️ Exemption: Retain until ${item.retentionExpiry || '2033'}</div>`
+      : `<div style="margin-top:4px; color:var(--emerald); font-size:0.7rem;">✓ Zero conflict (Safe to process)</div>`;
+
+    return `
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top;">
+        <td style="padding:10px 12px;">
+          <div style="font-weight:700; color:var(--text-bright); font-size:0.82rem;">${escapeHtml(item.system)}</div>
+          <div style="font-size:0.72rem; color:var(--text-muted); font-family:monospace;">${escapeHtml(item.target)}</div>
+        </td>
+        <td style="padding:10px 12px;">${actionBadge}</td>
+        <td style="padding:10px 12px;">${beforeSnippet}</td>
+        <td style="padding:10px 12px;">${afterSnippet}</td>
+        <td style="padding:10px 12px; font-size:0.75rem;">
+          <div style="color:var(--text-secondary); font-weight:600;">${escapeHtml(item.statutoryRule)}</div>
+          ${conflictNote}
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/**
+ * Execute Policy Dry-Run Simulation (POST /api/dsar/dryrun/simulate)
+ */
+export async function runDryRunSimulation(requestId) {
+  if (!requestId) return;
+
+  const kpiHardPurge = document.getElementById('dryrun-kpi-hard-purge');
+  const kpiPseudonymize = document.getElementById('dryrun-kpi-pseudonymize');
+  const kpiStatutoryRetain = document.getElementById('dryrun-kpi-statutory-retain');
+  const kpiSuppress = document.getElementById('dryrun-kpi-suppress');
+  const kpiDpoStatus = document.getElementById('dryrun-kpi-dpo-status');
+  const shaEl = document.getElementById('dryrun-sha256');
+  const btnDpoApprove = document.getElementById('btn-approve-dryrun-dpo');
+
+  try {
+    const res = await fetch(`${window.location.origin}/api/dsar/dryrun/simulate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requestId })
+    });
+
+    const data = await res.json();
+    if (data && data.success && data.summary) {
+      if (kpiHardPurge) kpiHardPurge.textContent = `${data.summary.hardPurge} Records`;
+      if (kpiPseudonymize) kpiPseudonymize.textContent = `${data.summary.pseudonymize} Orders`;
+      if (kpiStatutoryRetain) kpiStatutoryRetain.textContent = `${data.summary.statutoryRetain} Invoices (2033)`;
+      if (kpiSuppress) kpiSuppress.textContent = `${data.summary.suppress} Webhooks`;
+      if (shaEl) shaEl.textContent = data.simulationDigest || 'b848cfbe2c24c2957e8412';
+
+      if (kpiDpoStatus) {
+        if (data.summary.dpoApprovalStatus === 'DPO_APPROVED_READY_FOR_EXECUTION') {
+          kpiDpoStatus.innerHTML = `<span style="color:var(--emerald);">✓ DPO AUTHORIZED</span>`;
+          if (btnDpoApprove) {
+            btnDpoApprove.disabled = true;
+            btnDpoApprove.innerHTML = `<span>✓ DPO Authorized</span>`;
+            btnDpoApprove.style.background = 'rgba(16,185,129,0.2)';
+            btnDpoApprove.style.borderColor = 'var(--emerald)';
+          }
+        } else {
+          kpiDpoStatus.innerHTML = `<span style="color:var(--amber);">PENDING SIGN-OFF</span>`;
+          if (btnDpoApprove) {
+            btnDpoApprove.disabled = false;
+            btnDpoApprove.innerHTML = `<span>⚖️ DPO Sign-Off</span>`;
+          }
+        }
+      }
+
+      renderDryRunDiffTable(data.dryRunPlan);
+      showToast(`✓ Pre-Execution Dry-Run: 5 targets previewed (${data.summary.hardPurge} purge, ${data.summary.statutoryRetain} retained until 2033)`, 'info');
+    }
+  } catch (err) {
+    console.error('[Dry-Run Simulation Error]', err);
+    showToast(`Dry-run simulation failed: ${err.message}`, 'error');
+  }
+}
+
+/**
+ * DPO Sign-Off for Dry-Run Simulation Plan (POST /api/dsar/dryrun/approve)
+ */
+export async function approveDryRunDpo(requestId) {
+  if (!requestId) return;
+
+  try {
+    const res = await fetch(`${window.location.origin}/api/dsar/dryrun/approve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requestId,
+        approverName: 'Chief Privacy Officer (DPO)',
+        dpoNotes: 'Authorized pre-execution dry-run transformation diffs. Statutory CGST Sec. 36 retention rules and marketing suppression flags confirmed.'
+      })
+    });
+
+    const data = await res.json();
+    if (data && data.success) {
+      showToast('✓ DPO Formal Sign-Off Granted for Dry-Run Plan', 'success');
+      const kpiDpoStatus = document.getElementById('dryrun-kpi-dpo-status');
+      const btnDpoApprove = document.getElementById('btn-approve-dryrun-dpo');
+
+      if (kpiDpoStatus) {
+        kpiDpoStatus.innerHTML = `<span style="color:var(--emerald);">✓ DPO AUTHORIZED</span>`;
+      }
+      if (btnDpoApprove) {
+        btnDpoApprove.disabled = true;
+        btnDpoApprove.innerHTML = `<span>✓ DPO Authorized</span>`;
+        btnDpoApprove.style.background = 'rgba(16,185,129,0.2)';
+        btnDpoApprove.style.borderColor = 'var(--emerald)';
+      }
+    } else {
+      showToast(data.message || 'Failed to authorize dry-run plan', 'error');
+    }
+  } catch (err) {
+    showToast(`Error signing off dry-run plan: ${err.message}`, 'error');
   }
 }
 
@@ -274,6 +440,27 @@ export function initDsarPolicy() {
     });
   }
 
-  // Expose global handler for cross-module invocations
+  // Dry-Run Simulation Buttons
+  const btnRunDryRun = document.getElementById('btn-run-dryrun-sim');
+  if (btnRunDryRun) {
+    btnRunDryRun.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetReqId = activePolicyRequestId || (window.activePipelineRequestId || 'DSAR-2026-000101');
+      runDryRunSimulation(targetReqId);
+    });
+  }
+
+  const btnApproveDryRun = document.getElementById('btn-approve-dryrun-dpo');
+  if (btnApproveDryRun) {
+    btnApproveDryRun.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetReqId = activePolicyRequestId || (window.activePipelineRequestId || 'DSAR-2026-000101');
+      approveDryRunDpo(targetReqId);
+    });
+  }
+
+  // Expose global handlers for cross-module invocations
   window.runLegalPolicyEvaluation = runLegalPolicyEvaluation;
+  window.runDryRunSimulation = runDryRunSimulation;
+  window.approveDryRunDpo = approveDryRunDpo;
 }

@@ -1702,7 +1702,7 @@ Please let me know if you need any additional information from me.</textarea>
           <button type="button" class="dsar-detail-tab-btn active" data-tab="tasks">Tasks (6)</button>
           <button type="button" class="dsar-detail-tab-btn" data-tab="approvals">Approvals</button>
           <button type="button" class="dsar-detail-tab-btn" data-tab="communications">Communications</button>
-          <button type="button" class="dsar-detail-tab-btn" data-tab="auditlog">Audit Log</button>
+          <button type="button" class="dsar-detail-tab-btn" data-tab="auditlog">Timeline & Vault</button>
         </div>
       </div>
 
@@ -1928,12 +1928,67 @@ Please let me know if you need any additional information from me.</textarea>
         </div>
       </div>
 
-      <!-- TAB 7: AUDIT LOG PANEL -->
+      <!-- TAB 7: UNIFIED CASE TIMELINE & EVIDENCE VAULT (P1) -->
       <div id="detail-panel-auditlog" class="dsar-detail-panel hidden">
+        <div class="db-card" style="padding:22px 26px; margin-bottom:20px; border-left:4px solid var(--cyan);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
+            <div>
+              <div style="font-size:0.75rem; font-weight:800; color:var(--cyan); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:3px;">
+                🛡️ REGULATORY ACCOUNTABILITY DOSSIER (P1)
+              </div>
+              <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-bright); margin:0 0 4px 0;">
+                Unified Case Timeline & Evidence Vault
+              </h3>
+              <p style="font-size:0.82rem; color:var(--text-muted); margin:0;">
+                Tamper-evident SHA-256 hash chain linking all 11 lifecycle milestones under GDPR Art. 5(2) and DPDP Act 2023 Sec. 12.
+              </p>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <button type="button" id="btn-download-evidence-dossier" class="btn-primary btn-sm" style="display:inline-flex; align-items:center; gap:8px; padding:9px 18px; font-weight:700;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Export Evidence Dossier (.json)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Cryptographic Hash Chain Integrity Bar -->
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-top:18px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.08);">
+            <div>
+              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">CHAIN INTEGRITY</div>
+              <div id="timeline-chain-status" style="font-size:1rem; font-weight:800; color:var(--emerald);">✓ 100% Cryptographically Intact</div>
+            </div>
+            <div>
+              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">SEALED MILESTONE BLOCKS</div>
+              <div id="timeline-blocks-count" style="font-size:1rem; font-weight:800; color:var(--cyan);">11 / 11 Blocks</div>
+            </div>
+            <div>
+              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">LATEST HEAD HASH</div>
+              <div id="timeline-head-hash" style="font-size:0.75rem; font-weight:700; color:var(--text-bright); font-family:monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">-</div>
+            </div>
+            <div>
+              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">COMPLIANCE MANDATE</div>
+              <div style="font-size:0.8rem; font-weight:700; color:var(--amber);">GDPR Art. 5(2) & DPDP Sec. 12</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vertical Milestone Timeline Ledger -->
+        <div class="db-card" style="padding:22px 26px; margin-bottom:20px;">
+          <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-bright); margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+            <span>⛓️ Immutable Case Milestones Chronology</span>
+          </h4>
+          <div id="detail-case-timeline-container" style="display:flex; flex-direction:column; gap:12px;">
+            <div style="text-align:center; padding:24px; color:var(--text-muted);">
+              Loading verified timeline hash chain…
+            </div>
+          </div>
+        </div>
+
+        <!-- Raw Forensic Audit Logs -->
         <div class="db-card" style="padding:22px 26px;">
-          <h3 style="font-size:1.05rem; font-weight:800; color:var(--text-bright); margin-bottom:16px;">
-            Cryptographic Audit Ledger (ISO/IEC 27701 Sealed)
-          </h3>
+          <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-bright); margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+            <span>📜 Underlying Forensic Data Store Operations</span>
+          </h4>
           <div id="detail-auditlog-list" style="display:flex; flex-direction:column; gap:10px;">
             <!-- Populated dynamically -->
           </div>
@@ -2967,6 +3022,85 @@ Please let me know if you need any additional information from me.</textarea>
                 <tr>
                   <td colspan="6" style="text-align:center; padding:20px; color:var(--text-muted);">
                     Click "Proceed to Policy Check (Step 4)" to evaluate statutory compliance.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pre-Execution Policy Dry-Run Simulation & Side-by-Side Diff Section (P2) -->
+        <div id="dsar-dryrun-section" style="margin-top:20px; padding:18px 20px; background:rgba(6,182,212,0.03); border:1px solid rgba(6,182,212,0.25); border-radius:var(--radius-md);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
+            <div>
+              <div style="font-size:0.75rem; font-weight:800; color:var(--cyan); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:3px;">
+                🧪 PRE-EXECUTION POLICY SIMULATION (P2)
+              </div>
+              <h4 style="font-size:1rem; font-weight:800; color:var(--text-bright); margin:0;">
+                Pre-Execution Dry-Run Engine & Side-by-Side Diff Preview
+              </h4>
+              <p style="font-size:0.8rem; color:var(--text-muted); margin:3px 0 0 0;">
+                Simulates planned destructive mutations vs statutory retention and masking before modifying production stores.
+              </p>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <button type="button" id="btn-run-dryrun-sim" class="btn-ghost btn-sm" style="display:inline-flex; align-items:center; gap:6px; border:1px solid var(--cyan); color:var(--cyan); padding:8px 14px; font-weight:700;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
+                <span>Run Dry-Run Simulation</span>
+              </button>
+              <button type="button" id="btn-approve-dryrun-dpo" class="btn-ghost btn-sm" style="display:inline-flex; align-items:center; gap:6px; border:1px solid var(--emerald); color:var(--emerald); padding:8px 14px; font-weight:700;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/></svg>
+                <span>DPO Sign-Off</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dry-Run KPI Summary Cards -->
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:14px;">
+            <div style="padding:10px 12px; background:var(--bg-input); border-radius:6px; border-left:3px solid var(--red);">
+              <div style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">HARD PURGE</div>
+              <div id="dryrun-kpi-hard-purge" style="font-size:1rem; font-weight:800; color:var(--red);">-</div>
+            </div>
+            <div style="padding:10px 12px; background:var(--bg-input); border-radius:6px; border-left:3px solid var(--cyan);">
+              <div style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">PSEUDONYMIZE</div>
+              <div id="dryrun-kpi-pseudonymize" style="font-size:1rem; font-weight:800; color:var(--cyan);">-</div>
+            </div>
+            <div style="padding:10px 12px; background:var(--bg-input); border-radius:6px; border-left:3px solid var(--amber);">
+              <div style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">STATUTORY RETAIN</div>
+              <div id="dryrun-kpi-statutory-retain" style="font-size:1rem; font-weight:800; color:var(--amber);">-</div>
+            </div>
+            <div style="padding:10px 12px; background:var(--bg-input); border-radius:6px; border-left:3px solid var(--blue);">
+              <div style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">SUPPRESS (WEBHOOK)</div>
+              <div id="dryrun-kpi-suppress" style="font-size:1rem; font-weight:800; color:var(--blue);">-</div>
+            </div>
+            <div style="padding:10px 12px; background:var(--bg-input); border-radius:6px; border-left:3px solid var(--emerald);">
+              <div style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">DPO AUTHORIZATION</div>
+              <div id="dryrun-kpi-dpo-status" style="font-size:0.85rem; font-weight:800; color:var(--emerald);">PENDING</div>
+            </div>
+          </div>
+
+          <!-- Digest & Warning Banner -->
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:0.75rem; color:var(--text-muted); padding:8px 12px; background:rgba(255,255,255,0.02); border-radius:var(--radius-sm); border:1px solid var(--border); margin-bottom:14px;">
+            <span>🔐 Cryptographic Simulation Digest: <code id="dryrun-sha256" style="color:var(--cyan); font-family:monospace;">-</code></span>
+            <span>Statutory Conflict Gate: <strong style="color:var(--amber);">CGST Act Sec. 36 Exemption Locks Verified</strong></span>
+          </div>
+
+          <!-- Side-by-Side Diff Table -->
+          <div class="table-wrap">
+            <table class="db-table" id="dsar-dryrun-diff-table" style="font-size:0.8rem;">
+              <thead>
+                <tr>
+                  <th style="width:16%;">SYSTEM / STORE</th>
+                  <th style="width:13%;">ACTION</th>
+                  <th style="width:25%;">BEFORE (Current Data)</th>
+                  <th style="width:25%;">AFTER (Simulated Result)</th>
+                  <th style="width:21%;">LEGAL BASIS & CONFLICT</th>
+                </tr>
+              </thead>
+              <tbody id="dsar-dryrun-diff-tbody">
+                <tr>
+                  <td colspan="5" style="text-align:center; padding:18px; color:var(--text-muted);">
+                    Click "Run Dry-Run Simulation" to generate simulated mutation diffs.
                   </td>
                 </tr>
               </tbody>

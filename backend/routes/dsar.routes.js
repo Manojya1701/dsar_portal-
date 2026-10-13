@@ -17,6 +17,8 @@ const dsarCertificateService = require('../services/dsar-certificate-service');
 const emailNotificationService = require('../services/email-notification-service');
 const dsarSettingsService = require('../services/dsar-settings-service');
 const connectorReconciliationService = require('../services/connector-reconciliation-service');
+const dsarDryrunService = require('../services/dsar-dryrun-service');
+const dsarTimelineService = require('../services/dsar-timeline-service');
 
 function jsonError(res, status, message) {
   return res.status(status).json({ success: false, error: message });
@@ -978,6 +980,68 @@ router.get('/dsar/certificate/:id/export', async (req, res) => {
     }
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Content-Disposition', `attachment; filename="${result.filename || 'SegmentoProtect-AuditPackage.json'}"`);
+    return res.json(result.exportPayload);
+  } catch (err) {
+    return jsonError(res, 500, err.message);
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ── POLICY SIMULATION & PRE-EXECUTION "DRY-RUN" ROUTES ─────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+
+// GET /api/dsar/dryrun/:id - Fetch policy dry run simulation plan
+router.get(['/api/dsar/dryrun/:id', '/dsar/dryrun/:id'], async (req, res) => {
+  try {
+    const result = await dsarDryrunService.getDryRunPlan(req.params.id);
+    return res.json(result);
+  } catch (err) {
+    return jsonError(res, 500, err.message);
+  }
+});
+
+// POST /api/dsar/dryrun/simulate - Generate pre-execution dry-run simulation diff
+router.post(['/api/dsar/dryrun/simulate', '/dsar/dryrun/simulate'], async (req, res) => {
+  try {
+    const { requestId } = req.body || {};
+    const result = await dsarDryrunService.generateDryRunPlan(requestId);
+    return res.json(result);
+  } catch (err) {
+    return jsonError(res, 500, err.message);
+  }
+});
+
+// POST /api/dsar/dryrun/approve - DPO formal authorization of dry run plan
+router.post(['/api/dsar/dryrun/approve', '/dsar/dryrun/approve'], async (req, res) => {
+  try {
+    const { requestId, approverName, dpoNotes } = req.body || {};
+    const result = await dsarDryrunService.approveDryRunPlan(requestId, { approverName, dpoNotes });
+    return res.json(result);
+  } catch (err) {
+    return jsonError(res, 500, err.message);
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ── UNIFIED CASE TIMELINE & EVIDENCE VAULT ROUTES ─────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+
+// GET /api/dsar/timeline/:id - Fetch complete chronological audit ledger & hash chain
+router.get(['/api/dsar/timeline/:id', '/dsar/timeline/:id'], async (req, res) => {
+  try {
+    const result = await dsarTimelineService.getUnifiedCaseTimeline(req.params.id);
+    return res.json(result);
+  } catch (err) {
+    return jsonError(res, 500, err.message);
+  }
+});
+
+// GET /api/dsar/timeline/:id/export - Download regulatory certified evidence dossier
+router.get(['/api/dsar/timeline/:id/export', '/dsar/timeline/:id/export'], async (req, res) => {
+  try {
+    const result = await dsarTimelineService.exportEvidenceDossier(req.params.id);
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename="${result.filename || 'Evidence_Dossier.json'}"`);
     return res.json(result.exportPayload);
   } catch (err) {
     return jsonError(res, 500, err.message);
