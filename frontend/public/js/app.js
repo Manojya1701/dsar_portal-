@@ -126,5 +126,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // Documentation & Demo Video Hub Modal Wiring
+  const btnDocsHub = document.getElementById('btn-open-docs-hub-modal');
+  const modalDocsHub = document.getElementById('modal-docs-hub');
+  const btnCloseDocsHub = document.getElementById('btn-close-docs-hub');
+  const btnCloseDocsHubFooter = document.getElementById('btn-close-docs-hub-footer');
+  const backdropDocsHub = document.getElementById('modal-docs-hub-backdrop');
+
+  function openDocsHub(e) {
+    if (e) e.preventDefault();
+    if (modalDocsHub) modalDocsHub.classList.remove('hidden');
+  }
+  function closeDocsHub(e) {
+    if (e) e.preventDefault();
+    if (modalDocsHub) modalDocsHub.classList.add('hidden');
+  }
+
+  if (btnDocsHub) btnDocsHub.addEventListener('click', openDocsHub);
+  if (btnCloseDocsHub) btnCloseDocsHub.addEventListener('click', closeDocsHub);
+  if (btnCloseDocsHubFooter) btnCloseDocsHubFooter.addEventListener('click', closeDocsHub);
+  if (backdropDocsHub) backdropDocsHub.addEventListener('click', closeDocsHub);
+  window.openDocsHub = openDocsHub;
+  window.closeDocsHub = closeDocsHub;
+
   console.log('[Segmento DSAR Portal] Microservice Web App Initialized.');
 });
