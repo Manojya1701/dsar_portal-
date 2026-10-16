@@ -3538,23 +3538,23 @@ Please let me know if you need any additional information from me.</textarea>
         <span>• Enterprise DSAR &amp; Privacy Microservice</span>
       </div>
       <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; font-size:0.78rem;">
-        <a href="/docs/DSAR_COMPLETE_DOCUMENTATION.md" target="_blank" style="color:var(--cyan); text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:4px;">
-          <span>📘 DSAR Specs</span>
+        <a href="/docs/Segmento_DSAR_Portal_Documentation.pdf" target="_blank" style="color:var(--cyan); text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:5px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>DSAR PDF Documentation</span>
         </a>
-        <a href="/docs/UDPS_COMPLETE_DOCUMENTATION.md" target="_blank" style="color:var(--cyan); text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:4px;">
-          <span>🛡️ UDPS Specs</span>
+        <a href="/docs/Segmento_DSAR_Portal_Documentation.docx" download style="color:var(--cyan); text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:5px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          <span>DSAR Word Document</span>
         </a>
-        <a href="/docs/DEMO_VIDEO_SCRIPT_AND_STORYBOARD.md" target="_blank" style="color:var(--emerald); text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:4px;">
-          <span>🎬 Demo Video Script</span>
-        </a>
-        <a href="/docs/DSAR_Portal_Architecture_and_Flow.pdf" target="_blank" style="color:var(--purple); text-decoration:none; font-weight:600; display:inline-flex; align-items:center; gap:4px;">
-          <span>📄 Architecture PDF</span>
-        </a>
+        <button type="button" onclick="if(window.openDocsHub) window.openDocsHub();" style="background:none; border:none; padding:0; color:var(--emerald); font-weight:700; font-size:0.78rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19 8 5"/></svg>
+          <span>Demo Video</span>
+        </button>
       </div>
     </div>
   </footer>
 
-  <!-- ── MODAL: DOCUMENTATION & DEMO VIDEO HUB ───────────────────────────── -->
+  <!-- ── MODAL: DSAR DOCUMENTATION & DEMO VIDEO ───────────────────────────── -->
   <div id="modal-docs-hub" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-docs-hub-title">
     <div id="modal-docs-hub-backdrop" class="modal-overlay"></div>
     <div class="protection-preview-card" style="max-width: 760px; width:92%; border: 1px solid var(--border); box-shadow: var(--shadow-xl); max-height:88vh; overflow-y:auto;">
@@ -3566,79 +3566,63 @@ Please let me know if you need any additional information from me.</textarea>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
           </div>
           <div>
-            <h3 id="modal-docs-hub-title" class="prot-preview-title" style="font-size:1.15rem;">Segmento Documentation &amp; Demo Video Hub</h3>
-            <p class="prot-preview-subtitle">Technical specifications, statutory compliance blueprints, and complete live video walkthrough.</p>
+            <h3 id="modal-docs-hub-title" class="prot-preview-title" style="font-size:1.15rem;">Segmento DSAR Documentation &amp; Demo Video</h3>
+            <p class="prot-preview-subtitle">Official system documentation (PDF &amp; Word Doc) and product demonstration video.</p>
           </div>
         </div>
         <button type="button" id="btn-close-docs-hub" class="prot-preview-close-btn" aria-label="Close modal">&times;</button>
       </div>
 
       <!-- Modal Body -->
-      <div class="prot-preview-body" style="padding: 22px 24px; display:flex; flex-direction:column; gap:16px;">
+      <div class="prot-preview-body" style="padding: 22px 24px; display:flex; flex-direction:column; gap:18px;">
         
-        <!-- Card 1: DSAR System Specification -->
-        <div style="background:var(--bg-input); border:1px solid var(--border); border-left:4px solid var(--cyan); border-radius:8px; padding:16px 18px;">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+        <!-- Card 1: Official DSAR Documentation (PDF & DOCX) -->
+        <div style="background:var(--bg-input); border:1px solid var(--border); border-left:4px solid var(--cyan); border-radius:8px; padding:18px 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
             <div style="flex:1; min-width:240px;">
-              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-                <span style="font-size:1rem;">📘</span>
-                <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-bright); margin:0;">DSAR Portal &amp; Consent Hub System Specification</h4>
-                <span class="meta-pill" style="background:rgba(6,182,212,0.12); color:var(--cyan); font-size:0.68rem; font-weight:700;">GDPR &amp; DPDP 2023</span>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                <span style="font-size:1.1rem;">📘</span>
+                <h4 style="font-size:1rem; font-weight:800; color:var(--text-bright); margin:0;">Segmento DSAR Portal Documentation</h4>
+                <span class="meta-pill" style="background:rgba(6,182,212,0.12); color:var(--cyan); font-size:0.7rem; font-weight:700;">DPDP &amp; GDPR</span>
               </div>
-              <p style="font-size:0.8rem; color:var(--text-secondary); margin:0 0 8px 0; line-height:1.4;">
-                Complete engineering specification covering the 7-Stage Privacy Pipeline, Pre-Execution Dry-Run Simulation, 4-Action Taxonomy, DPO Sign-Off, 11-Milestone SHA-256 Hash Chain, Kafka Consent Hub, and 21 Jest Test Suites.
+              <p style="font-size:0.82rem; color:var(--text-secondary); margin:0 0 12px 0; line-height:1.5;">
+                Comprehensive technical and statutory specification covering the 7-Stage Privacy Pipeline, Pre-Execution Dry-Run Simulation, DPO Cryptographic Sign-Off, 11-Milestone SHA-256 Hash Chain, and Kafka Consent Hub.
               </p>
-            </div>
-            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-              <a href="/docs/DSAR_COMPLETE_DOCUMENTATION.md" target="_blank" class="btn-primary btn-sm" style="display:inline-flex; align-items:center; gap:6px; padding:7px 14px; text-decoration:none; font-size:0.78rem;">
-                <span>View Full Spec (.md)</span>
-              </a>
-              <a href="/docs/DSAR_Portal_Architecture_and_Flow.pdf" target="_blank" class="btn-ghost btn-sm" style="display:inline-flex; align-items:center; gap:6px; padding:7px 12px; text-decoration:none; font-size:0.78rem; color:var(--cyan); border-color:rgba(6,182,212,0.3);">
-                <span>PDF Blueprint</span>
-              </a>
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <a href="/docs/Segmento_DSAR_Portal_Documentation.pdf" target="_blank" class="btn-primary btn-sm" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; text-decoration:none; font-size:0.8rem; font-weight:700;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  <span>Download DSAR PDF</span>
+                </a>
+                <a href="/docs/Segmento_DSAR_Portal_Documentation.docx" download class="btn-ghost btn-sm" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; text-decoration:none; font-size:0.8rem; color:var(--cyan); border-color:rgba(6,182,212,0.4); font-weight:700;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                  <span>Download DSAR Word Doc</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Card 2: UDPS Protection Engine Specification -->
-        <div style="background:var(--bg-input); border:1px solid var(--border); border-left:4px solid var(--purple); border-radius:8px; padding:16px 18px;">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
-            <div style="flex:1; min-width:240px;">
-              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-                <span style="font-size:1rem;">🛡️</span>
-                <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-bright); margin:0;">UDPS Data Protection Engine Specification</h4>
-                <span class="meta-pill" style="background:rgba(139,92,246,0.12); color:#a78bfa; font-size:0.68rem; font-weight:700;">13+ Formats</span>
-              </div>
-              <p style="font-size:0.8rem; color:var(--text-secondary); margin:0 0 8px 0; line-height:1.4;">
-                Comprehensive specification for multi-format PII masking (Aadhaar, PAN, Phone, Email), Cryptographic Hashing (SHA-256 / BLAKE3), Military-Grade AES-256-GCM Encryption (PBKDF2 310k iterations), Opaque Vault, and 20 Test Suites.
-              </p>
+        <!-- Card 2: DSAR Product Demo Video (Placeholder) -->
+        <div style="background:var(--bg-input); border:1px solid var(--border); border-left:4px solid var(--emerald); border-radius:8px; padding:18px 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:1.1rem;">🎬</span>
+              <h4 style="font-size:1rem; font-weight:800; color:var(--text-bright); margin:0;">DSAR Operational Walkthrough Demo Video</h4>
             </div>
-            <div style="display:flex; gap:8px; align-items:center;">
-              <a href="/docs/UDPS_COMPLETE_DOCUMENTATION.md" target="_blank" class="btn-primary btn-sm" style="background:var(--purple); border-color:var(--purple); display:inline-flex; align-items:center; gap:6px; padding:7px 14px; text-decoration:none; font-size:0.78rem;">
-                <span>View UDPS Spec (.md)</span>
-              </a>
-            </div>
+            <span class="meta-pill" style="background:rgba(16,185,129,0.12); color:var(--emerald); font-size:0.7rem; font-weight:700;">Demo Video</span>
           </div>
-        </div>
+          
+          <p style="font-size:0.82rem; color:var(--text-secondary); margin:0 0 14px 0; line-height:1.5;">
+            Live end-to-end operational walkthrough demonstrating intake, automated identity discovery, pre-execution dry-run diffs, DPO sign-off, Kafka event propagation, and regulatory evidence dossier export.
+          </p>
 
-        <!-- Card 3: Complete Demo Video Script & Storyboard -->
-        <div style="background:var(--bg-input); border:1px solid var(--border); border-left:4px solid var(--emerald); border-radius:8px; padding:16px 18px;">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
-            <div style="flex:1; min-width:240px;">
-              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-                <span style="font-size:1rem;">🎬</span>
-                <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-bright); margin:0;">Official Demo Video Script &amp; Storyboard</h4>
-                <span class="meta-pill" style="background:rgba(16,185,129,0.12); color:var(--emerald); font-size:0.68rem; font-weight:700;">8-Chapter Guide</span>
-              </div>
-              <p style="font-size:0.8rem; color:var(--text-secondary); margin:0 0 8px 0; line-height:1.4;">
-                Time-coded production script formatted as a two-column broadcast storyboard (Visual Screen Actions + Spoken Voiceover Dialogue) covering UDPS, the 7-Stage Pipeline, Dry-Run diffs, Kafka events, and Evidence Vault export.
-              </p>
+          <!-- Video Player Container / Placeholder -->
+          <div style="position:relative; width:100%; height:260px; background:radial-gradient(circle at center, rgba(6,182,212,0.1) 0%, rgba(15,23,42,0.95) 100%); border:1px solid rgba(6,182,212,0.3); border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px;">
+            <div style="width:56px; height:56px; border-radius:50%; background:rgba(6,182,212,0.2); border:2px solid var(--cyan); display:flex; align-items:center; justify-content:center; color:var(--cyan); font-size:1.5rem; margin-bottom:12px; box-shadow:0 0 20px rgba(6,182,212,0.4); cursor:pointer;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19 8 5"/></svg>
             </div>
-            <div style="display:flex; gap:8px; align-items:center;">
-              <a href="/docs/DEMO_VIDEO_SCRIPT_AND_STORYBOARD.md" target="_blank" class="btn-primary btn-sm" style="background:var(--emerald); border-color:var(--emerald); display:inline-flex; align-items:center; gap:6px; padding:7px 14px; text-decoration:none; font-size:0.78rem;">
-                <span>View Video Script (.md)</span>
-              </a>
-            </div>
+            <div style="font-size:0.95rem; font-weight:800; color:var(--text-bright); margin-bottom:4px;">DSAR Portal Product Demo Video</div>
+            <div style="font-size:0.78rem; color:var(--text-muted); max-width:380px;">Demo video recording stream slot (7:45 min) • Ready for video playback</div>
           </div>
         </div>
 
@@ -3646,7 +3630,7 @@ Please let me know if you need any additional information from me.</textarea>
 
       <!-- Modal Footer -->
       <div style="padding: 14px 24px; border-top: 1px solid var(--border); background: var(--bg-input); display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-size: 0.72rem; color: var(--text-muted);">Segmento Regulatory Privacy &amp; Cryptographic Architecture</span>
+        <span style="font-size: 0.72rem; color: var(--text-muted);">Segmento Protect • Data Subject Rights Lifecycle System</span>
         <button type="button" id="btn-close-docs-hub-footer" class="btn-ghost btn-sm" style="padding: 6px 16px; font-size: 0.82rem; cursor: pointer;">Close</button>
       </div>
 
