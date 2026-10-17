@@ -139,6 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function closeDocsHub(e) {
     if (e) e.preventDefault();
+    const player = document.getElementById('dsar-demo-player');
+    if (player) {
+      player.pause();
+    }
     if (modalDocsHub) modalDocsHub.classList.add('hidden');
   }
 
